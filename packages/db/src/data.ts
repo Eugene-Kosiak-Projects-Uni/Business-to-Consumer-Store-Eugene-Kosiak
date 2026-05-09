@@ -1,106 +1,155 @@
-export type Post = {
+export type Product = {
   id: number;
   urlId: string;
   title: string;
-  content: string;
   description: string;
+  content: string;
   imageUrl: string;
-  date: Date;
   category: string;
-  views: number;
-  likes: number;
+  brand: string;
+  price: number;
+  stock: number;
+  rating: number;
   tags: string;
+  featured: boolean;
   active: boolean;
 };
 
-const content = `
-  # Title 1
+const wirelessHeadphonesContent = `
+# Wireless Headphones
 
-  Illo **sint voluptas**. Error voluptates culpa eligendi. 
-  Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-  Sed exercitationem placeat consectetur nulla deserunt vel 
-  iusto corrupti dicta laboris incididunt.
+Experience premium sound quality with active noise cancellation,
+Bluetooth 5.3 connectivity, and up to 40 hours of battery life.
 
-  ## Subtitle 1
+## Features
 
-  Illo sint *voluptas*. Error voluptates culpa eligendi. 
-  Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-  Sed exercitationem placeat consectetur nulla deserunt vel 
-  iusto corrupti dicta laboris incididunt.
+- Active Noise Cancellation
+- Wireless Bluetooth Connection
+- USB-C Fast Charging
+- Built-in Microphone
+- Comfortable Ear Cushions
+
+Perfect for gaming, music, travel, and everyday use.
 `;
 
-const description = `Illo sint voluptas. Error voluptates culpa eligendi. 
-Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-Sed exercitationem placeat consectetur nulla deserunt vel 
-iusto corrupti dicta laboris incididunt.`;
+const gamingKeyboardContent = `
+# RGB Gaming Keyboard
 
-export const posts: Post[] = [
+Mechanical gaming keyboard with customizable RGB lighting
+and ultra-fast response switches.
+
+## Features
+
+- Mechanical Switches
+- RGB Backlighting
+- Anti-Ghosting
+- USB-C Connectivity
+- Gaming Mode
+
+Built for competitive gaming and productivity.
+`;
+
+const smartWatchContent = `
+# Smart Watch Pro
+
+Track your health, fitness, and notifications in one sleek device.
+
+## Features
+
+- Heart Rate Monitor
+- Sleep Tracking
+- GPS
+- Waterproof Design
+- 7-Day Battery Life
+`;
+
+const runningShoesContent = `
+# Running Shoes
+
+Lightweight running shoes designed for comfort and performance.
+
+## Features
+
+- Breathable Fabric
+- Cushioned Sole
+- Lightweight Design
+- Durable Grip
+`;
+
+export const products: Product[] = [
   {
     id: 1,
-    title: "Boost your conversion rate",
-    urlId: "boost-your-conversion-rate",
-    description,
-    content: content + " ... post1",
+    urlId: "wireless-headphones",
+    title: "Wireless Headphones",
+    description:
+      "Premium wireless headphones with active noise cancellation and 40-hour battery life.",
+    content: wirelessHeadphonesContent,
     imageUrl:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&auto=format&fit=crop&w=3603&q=80",
-    date: new Date("Apr 18, 2022"),
-    category: "Node",
-    tags: "Back-End,Databases",
-    views: 320,
-    likes: 3,
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop",
+    category: "Electronics",
+    brand: "SoundMax",
+    price: 199,
+    stock: 12,
+    rating: 4.8,
+    tags: "Audio,Wireless,Tech",
+    featured: true,
     active: true,
   },
+
   {
     id: 2,
-    title: "Better front ends with Fatboy Slim",
-    urlId: "better-front-ends-with-fatboy-slim",
-    description: `Illo sint voluptas. Error voluptates culpa eligendi. 
-       Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-       Sed exercitationem placeat consectetur nulla deserunt vel 
-       iusto corrupti dicta laboris incididunt.`,
-    content: content + " ... post2",
+    urlId: "rgb-gaming-keyboard",
+    title: "RGB Gaming Keyboard",
+    description:
+      "Mechanical gaming keyboard with RGB lighting and ultra-fast response switches.",
+    content: gamingKeyboardContent,
     imageUrl:
-      "https://plus.unsplash.com/premium_photo-1661342428515-5ca8cee4385a?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3",
-    date: new Date("Mar 16, 2020"),
-    category: "React",
-    tags: "Front-End,Optimisation",
-    views: 10,
-    likes: 1,
+      "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=1200&auto=format&fit=crop",
+    category: "Gaming",
+    brand: "HyperTech",
+    price: 149,
+    stock: 18,
+    rating: 4.7,
+    tags: "Gaming,Keyboard,RGB",
+    featured: true,
     active: true,
   },
+
   {
     id: 3,
-    title: "No front end framework is the best",
-    urlId: "no-front-end-framework-is-the-best",
-    description: `Illo sint voluptas. Error voluptates culpa eligendi. 
-       Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-       Sed exercitationem placeat consectetur nulla deserunt vel 
-       iusto corrupti dicta laboris incididunt.`,
-    content: content + " ... post3",
+    urlId: "smart-watch-pro",
+    title: "Smart Watch Pro",
+    description:
+      "Track your fitness, notifications, and health metrics all day long.",
+    content: smartWatchContent,
     imageUrl:
-      "https://plus.unsplash.com/premium_photo-1661517706036-a48d5fc8f2f5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    date: new Date("Dec 16, 2024"),
-    category: "React",
-    tags: "Front-End,Dev Tools",
-    views: 22,
-    likes: 2,
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop",
+    category: "Electronics",
+    brand: "Nova",
+    price: 249,
+    stock: 9,
+    rating: 4.6,
+    tags: "Watch,Fitness,Tech",
+    featured: true,
     active: true,
   },
+
   {
     id: 4,
-    title: "Visual Basic is the future",
-    urlId: "visual-basic-is-the-future",
-    description: `Illo sint voluptas. Error voluptates culpa eligendi. 
-       Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. 
-       Sed exercitationem placeat consectetur nulla deserunt vel 
-       iusto corrupti dicta laboris incididunt.`,
-    content: content + " ... post4",
-    imageUrl: "https://m.media-amazon.com/images/I/51NqEfmmBTL.jpg",
-    date: new Date("Dec 16, 2012"),
-    category: "React",
-    tags: "Programming,Mainframes",
-    views: 22,
-    likes: 1,
-    active: false,
-  },
+    urlId: "running-shoes",
+    title: "Running Shoes",
+    description:
+      "Comfortable lightweight running shoes built for performance and everyday wear.",
+    content: runningShoesContent,
+    imageUrl:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
+    category: "Clothing",
+    brand: "Velocity",
+    price: 129,
+    stock: 22,
+    rating: 4.5,
+    tags: "Shoes,Sports,Fitness",
+    featured: false,
+    active: true,
+  }
 ];
