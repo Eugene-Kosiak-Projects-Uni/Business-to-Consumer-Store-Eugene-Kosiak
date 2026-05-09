@@ -4,9 +4,9 @@ import { products } from "@repo/db/data";
 export default async function Page({
   params,
 }: {
-  params: { year: string; month: string };
+  params: Promise<{ year: string; month: string }>;
 }) {
-  const { year, month } = params;
+  const { year, month } = await params;
 
   const start = new Date(Number(year), Number(month) - 1, 1);
   const end = new Date(Number(year), Number(month), 1);
