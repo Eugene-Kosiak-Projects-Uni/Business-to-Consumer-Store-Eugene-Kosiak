@@ -1,48 +1,29 @@
 import { Main } from "@/components/Main";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: { q?: string };
 }) {
-  // Get search query from URL parameters
-  const { q } = await searchParams;
+  const query = (searchParams.q || "").toLowerCase();
 
-  // Get all posts that are active, and include how many likes each one has.
-  const posts = await prisma.post.findMany({
-    where: {
-      active: true,
-    },
-    include: {
-      _count: {
-        select: { likes: true },
-      },
-    },
-  });
-  // if query is empty, set it to an empty string to avoid errors when calling toLowerCase
-  const query = (q || "").toLowerCase();
-  
-  // Filter posts to match title or description with the search query (case-insensitive)
-  const filteredPosts = posts.filter((post) => {
+  const filteredProducts = products.filter((p) => {
     return (
-      post.title.toLowerCase().includes(query) ||
-      post.description.toLowerCase().includes(query)
+      p.active &&
+      (p.title.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query))
     );
   });
 
   return (
     <div className="space-y-6">
-      {q && (
-        <h1 className="text-2xl font-semibold text-primary">
-          Results for "{q}"
-        </h1>
-      )}
+      {query && <h1>Results for "{query}"</h1>}
 
-      {filteredPosts.length === 0 ? (
-        <p className="text-secondary">0 Posts</p>
+      {filteredProducts.length === 0 ? (
+        <p>0 Products</p>
       ) : (
-        <Main posts={filteredPosts} />
+        <Main products={filteredProducts} />
       )}
     </div>
   );

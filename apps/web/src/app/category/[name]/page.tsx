@@ -1,33 +1,33 @@
 import { Main } from "@/components/Main";
 import { toUrlPath } from "@repo/utils/url";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ name: string }>;
+  params: { name: string };
 }) {
-  // Get category name from URL
-  const { name } = await params;
+  const { name } = params;
 
-  // Get posts from database that are active
-  const posts = await prisma.post.findMany({
-    where: { active: true },
-    include: {
-      _count: {
-        select: { likes: true }, // add number of likes for each post
-      },
-    },
-  });
+  // filter active products
+  const activeProducts = products.filter((p) => p.active);
 
-  // Convert category into URL format, compare it to name from URL
-  const filteredPosts = posts.filter(
-    (post) => toUrlPath(post.category) === name
+  // match category from URL
+  const filteredProducts = activeProducts.filter(
+    (product) => toUrlPath(product.category) === name
   );
 
-  return filteredPosts.length === 0 ? (
-    <p className="text-secondary">0 Posts</p>
-  ) : (
-    <Main posts={filteredPosts} />
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">
+        Category / {name}
+      </h1>
+
+      {filteredProducts.length === 0 ? (
+        <p className="text-secondary">0 Products</p>
+      ) : (
+        <Main products={filteredProducts} />
+      )}
+    </div>
   );
 }

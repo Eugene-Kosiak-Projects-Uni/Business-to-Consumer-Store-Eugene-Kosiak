@@ -1,21 +1,28 @@
-import { categories } from "@/functions/categories";
-import type { Post } from "@prisma/client";
 import { toUrlPath } from "@repo/utils/url";
 import { SummaryItem } from "./SummaryItem";
+import type { Product } from "@repo/db/data";
 
-export function CategoryList({ posts }: { posts: Post[] }) {
+export function CategoryList({ products }: { products: Product[] }) {
+  const categories = [...new Set(products.map((p) => p.category))];
+
   return (
     <>
-      {categories(posts).map((item) => (
-        <SummaryItem
-          key={item.name}
-          count={item.count}
-          name={item.name}
-          isSelected={false}
-          link={`/category/${toUrlPath(item.name)}`}
-          title=""
-        />
-      ))}
+      {categories.map((cat) => {
+        const count = products.filter(
+          (p) => p.active && p.category === cat
+        ).length;
+
+        return (
+          <SummaryItem
+            key={cat}
+            count={count}
+            name={cat}
+            isSelected={false}
+            link={`/category/${toUrlPath(cat)}`}
+            title=""
+          />
+        );
+      })}
     </>
   );
 }

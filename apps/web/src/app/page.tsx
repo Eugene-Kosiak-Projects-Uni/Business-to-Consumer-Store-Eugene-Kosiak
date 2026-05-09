@@ -1,16 +1,8 @@
 import { Main } from "@/components/Main";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 export default async function Page() {
-  // Get all active posts, and include how many likes each one has.
-  const activePosts = await prisma.post.findMany({
-    where: { active: true },
-    include: {
-      _count: {
-        select: { likes: true },
-      },
-    },
-  });
+  const activeProducts = products.filter((p) => p.active);
 
-  return <Main posts={activePosts} />;
+  return <Main products={activeProducts} />;
 }

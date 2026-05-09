@@ -1,26 +1,31 @@
-import { prisma } from "@repo/db/prisma";
 import { CategoryList } from "./CategoryList";
 import { HistoryList } from "./HistoryList";
 import { TagList } from "./TagList";
+import { products } from "@repo/db/data";
 
 export async function LeftMenu() {
-  const posts = await prisma.post.findMany();
-
   return (
     <div>
-      {/* SIDEBAR */}
       <div>Top Links and blog name</div>
+
       <nav>
-        <ul role="list" className="flex flex-1 flex-col gap-y-7">
+        <ul className="flex flex-col gap-y-7">
           <li>
-            <CategoryList posts={posts} />
+            <CategoryList products={products} />
           </li>
+
           <li>
-            <HistoryList selectedYear="" selectedMonth="" posts={posts} />
+            <HistoryList
+              selectedYear=""
+              selectedMonth=""
+              products={products}
+            />
           </li>
+
           <li>
-            <TagList selectedTag="" posts={posts} />
+            <TagList selectedTag="" products={products} />
           </li>
+
           <li>Admin</li>
         </ul>
       </nav>

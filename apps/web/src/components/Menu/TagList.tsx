@@ -1,4 +1,5 @@
-import type { Post } from "@prisma/client";
+//import type { Post } from "@prisma/client";
+import type { Product } from "@repo/db/data";
 import { tags } from "../../functions/tags";
 import { LinkList } from "./LinkList";
 import Link from "next/link";
@@ -6,12 +7,12 @@ import { toUrlPath } from "@repo/utils/url";
 
 export async function TagList({
   selectedTag,
-  posts,
+  products,
 }: {
   selectedTag?: string;
-  posts: Post[];
+  products: Product[];
 }) {
-  const postTags = await tags(posts); // returns ["Back-End", "Front-End", ...] 
+  const postTags = await tags(products); // returns ["Back-End", "Front-End", ...] 
 
   return (
     <LinkList title="Tags">

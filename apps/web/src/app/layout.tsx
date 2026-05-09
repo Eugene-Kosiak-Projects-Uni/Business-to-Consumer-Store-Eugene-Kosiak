@@ -1,15 +1,15 @@
-// import "@repo/ui/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { toUrlPath } from "@repo/utils/url";
 import { TagList } from "@/components/Menu/TagList";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 import Link from "next/link";
+import Image from "next/image";
 import { ThemeProvider } from "@/components/Themes/ThemeContext";
 import ThemeSwitch from "@/components/Themes/ThemeSwitcher";
-import Image from "next/image";
+import SearchBox from "@/components/SearchBox";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,16 +21,20 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Full-Stack Blog",
-  description: "Blog about full stack development",
+  title: "Full-Stack Store",
+  description: "B2C Store Application",
 };
 
-import SearchBox from "@/components/SearchBox";
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const serverCookies = await cookies();
-  const theme = (serverCookies.get("theme")?.value || "light") as "light" | "dark";
-  const posts = await prisma.post.findMany();
+  const theme =
+    (serverCookies.get("theme")?.value || "light") as "light" | "dark";
+
+  const activeProducts = products.filter((p) => p.active);
 
   return (
     <html lang="en" data-theme={theme}>
@@ -38,100 +42,88 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeProvider initialTheme={theme}>
           <div className="flex h-screen">
 
-            {/* Sidebar */}
-            <aside className="w-64 border-r border-black dark:border-white p-6">
-            <Link href="/" className="block mb-6">
-              <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">
-                <Image
-                  src="/wsuLogo.png"
-                  alt="WSU Logo"
-                  width={40}
-                  height={40}
-                />
-                <h1 className="text-xl font-bold text-wsu">
-                  Full Stack Blog
-                </h1>
-              </div>
-            </Link>
+            {/* SIDEBAR */}
+            <aside className="w-64 border-r p-6">
+              <Link href="/" className="block mb-6">
+                <div className="flex items-center gap-2">
+                  <Image src="/wsuLogo.png" alt="Logo" width={40} height={40} />
+                  <h1 className="text-xl font-bold">B2C Store</h1>
+                </div>
+              </Link>
 
-            <nav className="space-y-4">
-      
-              <div>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Categories</p>
-                <ul className="space-y-2">
-                  {["React", "Node", "Mongo", "DevOps"].map((cat) => {
-                    const count = posts.filter(
-                      (p) => p.active && p.category === cat
-                    ).length;
+              <nav className="space-y-6">
 
-                    return (
-                      <li key={cat}>
-                        <Link
-                          href={`/category/${toUrlPath(cat)}`}
-                          title={`Category / ${cat}`}
-                          className="text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
-                        >
-                          {cat} <span data-test-id="post-count">{count}</span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+                {/* CATEGORIES */}
+                <div>
+                  <p className="font-semibold mb-2">Categories</p>
+                  <ul className="space-y-2">
+                    {["Electronics", "Gaming", "Clothing"].map((cat) => {
+                      const count = activeProducts.filter(
+                        (p) => p.category === cat
+                      ).length;
 
-              <div>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2 mt-6">History</p>
-                <ul className="space-y-2">
-                  {Array.from(
-                    posts
-                      .filter((p) => p.active)
-                      .reduce((acc, post) => {
-                        const d = new Date(post.date);
+                      return (
+                        <li key={cat}>
+                          <Link
+                            href={`/category/${toUrlPath(cat)}`}
+                            className="text-gray-500 hover:text-black"
+                          >
+                            {cat} <span>{count}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                {/* HISTORY */}
+                <div>
+                  <p className="font-semibold mb-2">History</p>
+                  <ul className="space-y-2">
+                    {Array.from(
+                      activeProducts.reduce((acc, product) => {
+                        const d = new Date(product.date);
                         const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
                         acc.set(key, (acc.get(key) || 0) + 1);
                         return acc;
                       }, new Map<string, number>())
-                  ).map(([key, count]) => {
-                    const [year, month] = key.split("-");
-                    const date = new Date(Number(year), Number(month) - 1);
+                    ).map(([key, count]) => {
+                      const [year, month] = key.split("-");
+                      const date = new Date(Number(year), Number(month) - 1);
 
-                    const label = date.toLocaleString("en-GB", {
-                      month: "long",
-                    }) + `, ${date.getFullYear()}`;
+                      const label = date.toLocaleString("en-GB", {
+                        month: "long",
+                      });
 
-                    return (
-                      <li key={key}>
-                        <Link
-                          href={`/history/${year}/${month}`}
-                          title={`History / ${label}`}
-                          className="text-500 text-gray-500 dark:text-white dark:hover:text-gray-300"
-                        >
-                          {label} <span data-test-id="post-count">{count}</span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+                      return (
+                        <li key={key}>
+                          <Link
+                            href={`/history/${year}/${month}`}
+                            className="text-gray-500"
+                          >
+                            {label} {year} <span>{count}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
 
-              <div className="mt-6">
-                <TagList posts={posts} />
-              </div>
-            </nav>
-          </aside>
+                {/* TAGS */}
+                <TagList products={activeProducts} />
+              </nav>
+            </aside>
 
+            {/* MAIN AREA */}
             <div className="flex-1 flex flex-col">
-
-
-              <header className="flex items-center justify-between p-4 border-b">
+              <header className="flex justify-between p-4 border-b">
                 <SearchBox />
                 <ThemeSwitch />
               </header>
 
               <main className="p-6 overflow-y-auto">
-                <div className="max-w-5xl">{children}</div>
+                {children}
               </main>
-
             </div>
           </div>
         </ThemeProvider>
