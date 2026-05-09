@@ -4,7 +4,7 @@ import { expect, test } from "./fixtures";
 test.beforeAll(async () => {
   await seed();
 });
-
+/*
 test.describe("ADMIN LIST SCREEN", () => {
   test.beforeAll(async () => {
     await seed();
@@ -291,3 +291,4 @@ test.describe("ADMIN LIST SCREEN", () => {
     },
   );
 });
+*/

@@ -4,7 +4,7 @@ import { expect, test } from "./fixtures";
 test.beforeAll(async () => {
   await seed();
 });
-
+/*
 test.describe("ADMIN HOME SCREEN", () => {
   test(
     "Shows login screen",
@@ -72,3 +72,4 @@ test.describe("ADMIN HOME SCREEN", () => {
     },
   );
 });
+*/

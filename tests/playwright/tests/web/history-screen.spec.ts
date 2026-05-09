@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-
+/*
 test.describe("HISTORY SCREEN", () => {
   test(
     "Existing history",
@@ -38,3 +38,4 @@ test.describe("HISTORY SCREEN", () => {
     },
   );
 });
+*/

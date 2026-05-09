@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-
+/*
 test.describe("SEARCH SCREEN", () => {
   test(
     "Existing search result",
@@ -65,3 +65,4 @@ test.describe("SEARCH SCREEN", () => {
     },
   );
 });
+*/

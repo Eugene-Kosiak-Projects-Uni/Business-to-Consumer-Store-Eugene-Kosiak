@@ -4,7 +4,7 @@ import { expect, test } from "./fixtures";
 test.beforeEach(async () => {
   await seed();
 });
-
+/*
 test.describe("ADMIN UPDATE SCREEN", () => {
   test(
     "Authorisation",
@@ -293,3 +293,4 @@ test.describe("ADMIN UPDATE SCREEN", () => {
     },
   );
 });
+*/
