@@ -3,7 +3,7 @@ export type Product = {
   urlId: string;
   title: string;
   description: string;
-  date: number;
+  date: string;
   content: string;
   imageUrl: string;
   category: string;
@@ -84,7 +84,7 @@ export const products: Product[] = [
     title: "Wireless Headphones",
     description:
       "Premium wireless headphones with active noise cancellation and 40-hour battery life.",
-    date: 20250110,
+    date: "2025-01-10",
     content: wirelessHeadphonesContent,
     imageUrl:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop",
@@ -104,7 +104,7 @@ export const products: Product[] = [
     title: "RGB Gaming Keyboard",
     description:
       "Mechanical gaming keyboard with RGB lighting and ultra-fast response switches.",
-    date: 20250305,
+    date: "2025-03-05",
     content: gamingKeyboardContent,
     imageUrl:
       "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=1200&auto=format&fit=crop",
@@ -124,7 +124,7 @@ export const products: Product[] = [
     title: "Smart Watch Pro",
     description:
       "Track your fitness, notifications, and health metrics all day long.",
-    date: 20250620,
+    date: "2025-06-20",
     content: smartWatchContent,
     imageUrl:
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop",
@@ -144,7 +144,7 @@ export const products: Product[] = [
     title: "Running Shoes",
     description:
       "Comfortable lightweight running shoes built for performance and everyday wear.",
-    date: 20250912,
+    date: "2025-09-12",
     content: runningShoesContent,
     imageUrl:
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
