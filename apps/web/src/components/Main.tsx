@@ -43,7 +43,7 @@ export function Main({
                 <div>
                   <h2 className="text-xl font-semibold mb-2">
                     <Link
-                      href={`/post/${product.urlId}`}
+                      href={`/product/${product.urlId}`}
                       className="hover:underline"
                     >
                       {product.title}
