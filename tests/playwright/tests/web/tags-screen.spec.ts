@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-/*
+/* - Old tests from post data
 test.describe("TAG SCREEN", () => {
   test(
     "Existing Tag with one post",

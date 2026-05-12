@@ -1,7 +1,7 @@
 import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
-/*
+/* - Old tests from post data
 test.describe("CATEGORY SCREEN", () => {
   test.beforeAll(async () => {
     await seed();
@@ -50,3 +50,55 @@ test.describe("CATEGORY SCREEN", () => {
   );
 });
 */
+
+test.describe("CATEGORY SCREEN", () => {
+  test(
+    "Electronics Category",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/category/electronics");
+
+      await expect(
+        page.getByText("Wireless Headphones"),
+      ).toBeVisible();
+
+      await expect(
+        page.getByText("Smart Watch Pro"),
+      ).toBeVisible();
+
+      await expect(
+        page.getByText("RGB Gaming Keyboard"),
+      ).not.toBeVisible();
+    },
+  );
+
+  test(
+    "Gaming Category",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/category/gaming");
+
+      await expect(
+        page.getByText("RGB Gaming Keyboard"),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "Invalid Category",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/category/abc");
+
+      await expect(
+        page.getByText("0 Products"),
+      ).toBeVisible();
+    },
+  );
+});

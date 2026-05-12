@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-/*
+/* - Old tests from post data
 test.describe("HISTORY SCREEN", () => {
   test(
     "Existing history",
@@ -39,3 +39,47 @@ test.describe("HISTORY SCREEN", () => {
   );
 });
 */
+
+test.describe("HISTORY SCREEN", () => {
+  test(
+    "January 2025 History",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/history/2025/1");
+
+      await expect(
+        page.getByText("Wireless Headphones"),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "March 2025 History",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/history/2025/3");
+
+      await expect(
+        page.getByText("RGB Gaming Keyboard"),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "Invalid History",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/history/2024/1");
+
+      await expect(
+        page.getByText("0 Products"),
+      ).toBeVisible();
+    },
+  );
+});
