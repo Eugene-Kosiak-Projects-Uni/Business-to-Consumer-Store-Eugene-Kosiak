@@ -19,7 +19,7 @@ export function CategoryList({ products }: { products: Product[] }) {
             name={cat}
             isSelected={false}
             link={`/category/${toUrlPath(cat)}`}
-            title=""
+            title={`Category / ${cat}`}
           />
         );
       })}

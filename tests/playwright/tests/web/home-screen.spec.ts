@@ -178,7 +178,7 @@ test.describe("HOME SCREEN", () => {
     link: string,
     count?: number,
   ) {
-    const linkItem = page.getByRole("link", { name: new RegExp(name, "i") });
+    const linkItem = page.getByTitle(`Category / ${name}`);
 
     await expect(linkItem).toBeVisible();
     await expect(linkItem).toHaveAttribute("href", link);
@@ -196,10 +196,10 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
-      await expect(page.getByText("Wireless Headphones")).toBeVisible();
-      await expect(page.getByText("RGB Gaming Keyboard")).toBeVisible();
-      await expect(page.getByText("Smart Watch Pro")).toBeVisible();
-      await expect(page.getByText("Running Shoes")).toBeVisible();
+      await expect(page.getByTestId("b2c-1")).toBeVisible();
+      await expect(page.getByTestId("b2c-2")).toBeVisible();
+      await expect(page.getByTestId("b2c-3")).toBeVisible();
+      await expect(page.getByTestId("b2c-4")).toBeVisible();
     },
   );
 

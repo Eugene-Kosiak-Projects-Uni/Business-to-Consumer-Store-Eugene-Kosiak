@@ -19,18 +19,23 @@ export default function Page({
   const product = products.find((p) => p.urlId === urlId);
 
   if (!product) {
-    return <div className="max-w-4xl mx-auto px-6 py-10">Product not found</div>;
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        Product not found
+      </div>
+    );
   }
 
   function handleAddToCart() {
-  if (!product) return;
+    if (!product) return;
     addToCart(product);
     setShowPopup(true);
-
     setTimeout(() => setShowPopup(false), 2000);
   }
 
-  const cleanedContent = product.content.replace(/^# .*$/m, "").trim();
+  const cleanedContent = product.content
+    .replace(/^# .*$/m, "")
+    .trim();
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
@@ -82,11 +87,14 @@ export default function Page({
         </div>
       </div>
 
-      {/* Markdown */}
+      {/* Markdown (FIXED FOR TESTING) */}
       <div className="mt-14 border-t pt-10">
         <h2 className="text-2xl font-bold mb-6">Product Details</h2>
 
-        <article className="prose prose-lg max-w-none">
+        <article
+          className="prose prose-lg max-w-none"
+          data-test-id="product-markdown"
+        >
           <ReactMarkdown>{cleanedContent}</ReactMarkdown>
         </article>
       </div>

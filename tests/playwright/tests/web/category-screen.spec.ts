@@ -50,55 +50,28 @@ test.describe("CATEGORY SCREEN", () => {
   );
 });
 */
-
 test.describe("CATEGORY SCREEN", () => {
-  test(
-    "Electronics Category",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/category/electronics");
+  test("Electronics Category", async ({ page }) => {
+    await page.goto("/category/electronics");
 
-      await expect(
-        page.getByText("Wireless Headphones"),
-      ).toBeVisible();
+    const products = page.locator('[data-test-id^="b2c-"]');
+    await expect(products).toHaveCount(2);
 
-      await expect(
-        page.getByText("Smart Watch Pro"),
-      ).toBeVisible();
+    await expect(page.getByTestId("b2c-1")).toBeVisible(); // Wireless Headphones
+    await expect(page.getByTestId("b2c-3")).toBeVisible(); // Smart Watch Pro
 
-      await expect(
-        page.getByText("RGB Gaming Keyboard"),
-      ).not.toBeVisible();
-    },
-  );
+    await expect(page.getByTestId("b2c-2")).not.toBeVisible();
+  });
 
-  test(
-    "Gaming Category",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/category/gaming");
+  test("Gaming Category", async ({ page }) => {
+    await page.goto("/category/gaming");
 
-      await expect(
-        page.getByText("RGB Gaming Keyboard"),
-      ).toBeVisible();
-    },
-  );
+    await expect(page.getByTestId("b2c-2")).toBeVisible(); // RGB Keyboard
+  });
 
-  test(
-    "Invalid Category",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/category/abc");
+  test("Invalid Category", async ({ page }) => {
+    await page.goto("/category/abc");
 
-      await expect(
-        page.getByText("0 Products"),
-      ).toBeVisible();
-    },
-  );
+    await expect(page.getByText("0 Products")).toBeVisible();
+  });
 });
