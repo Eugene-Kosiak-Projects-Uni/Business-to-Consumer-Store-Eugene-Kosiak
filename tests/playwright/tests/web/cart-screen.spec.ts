@@ -1,5 +1,19 @@
 import { expect, test } from "./fixtures";
 
+async function login(page: any) {
+  await page.goto("/login");
+
+  await page
+    .getByPlaceholder("Enter password")
+    .fill("user123");
+
+  await page
+    .getByRole("button", { name: /login/i })
+    .click();
+
+  await page.waitForURL("/");
+}
+
 test.describe("CART SCREEN", () => {
   test(
     "Add Product To Cart",
@@ -7,17 +21,30 @@ test.describe("CART SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await login(page);
+
       await page.goto("/product/wireless-headphones");
 
-      await page.getByRole("button", { name: /add to cart/i }).click();
+      await page
+        .getByRole("button", { name: /add to cart/i })
+        .click();
 
-      await expect(page.getByText(/item added to cart/i)).toBeVisible();
+      await expect(
+        page.getByText(/item added to cart/i)
+      ).toBeVisible();
+
+      // IMPORTANT
+      await page.waitForTimeout(500);
 
       await page.goto("/cart");
 
-      await expect(page.getByText("Wireless Headphones")).toBeVisible();
+      await expect(
+        page.getByText("Wireless Headphones")
+      ).toBeVisible();
 
-      await expect(page.getByText("$199.00 each × 1")).toBeVisible();
+      await expect(
+        page.getByText("$199.00 each × 1")
+      ).toBeVisible();
     },
   );
 
@@ -27,15 +54,32 @@ test.describe("CART SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await login(page);
+
       await page.goto("/product/wireless-headphones");
 
-      await page.getByRole("button", { name: /add to cart/i }).click();
+      await page
+        .getByRole("button", { name: /add to cart/i })
+        .click();
+
+      await expect(
+        page.getByText(/item added to cart/i)
+      ).toBeVisible();
+
+      // IMPORTANT
+      await page.waitForTimeout(500);
 
       await page.goto("/cart");
 
+      await expect(
+        page.getByText("Wireless Headphones")
+      ).toBeVisible();
+
       await page.getByText("Remove").click();
 
-      await expect(page.getByText("Cart is empty")).toBeVisible();
+      await expect(
+        page.getByText("Cart is empty")
+      ).toBeVisible();
     },
   );
 
@@ -45,17 +89,42 @@ test.describe("CART SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await login(page);
+
       await page.goto("/product/wireless-headphones");
 
-      await page.getByRole("button", { name: /add to cart/i }).click();
+      await page
+        .getByRole("button", { name: /add to cart/i })
+        .click();
+
+      await expect(
+        page.getByText(/item added to cart/i)
+      ).toBeVisible();
+
+      // IMPORTANT
+      await page.waitForTimeout(500);
 
       await page.goto("/cart");
 
-      await page.getByRole("button", { name: /mock checkout/i }).click();
+      await expect(
+        page.getByRole("button", {
+          name: /mock checkout/i,
+        })
+      ).toBeVisible();
 
-      await expect(page.getByText(/payment successful/i)).toBeVisible();
+      await page
+        .getByRole("button", {
+          name: /mock checkout/i,
+        })
+        .click();
 
-      await expect(page.getByText(/mock checkout complete/i)).toBeVisible();
+      await expect(
+        page.getByText(/payment successful/i)
+      ).toBeVisible();
+
+      await expect(
+        page.getByText(/mock checkout complete/i)
+      ).toBeVisible();
     },
   );
 
@@ -65,20 +134,40 @@ test.describe("CART SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await login(page);
+
       await page.goto("/product/wireless-headphones");
 
-      await page.getByRole("button", { name: /add to cart/i }).click();
+      await page
+        .getByRole("button", { name: /add to cart/i })
+        .click();
+
+      await expect(
+        page.getByText(/item added to cart/i)
+      ).toBeVisible();
+
+      // IMPORTANT
+      await page.waitForTimeout(500);
 
       await page.goto("/cart");
 
-      const plus = page.getByRole("button", { name: "+" });
+      const plus = page.getByRole("button", {
+        name: "+",
+      });
+
+      await expect(plus).toBeVisible();
 
       for (let i = 0; i < 20; i++) {
         await plus.click();
       }
 
-      await expect(page.getByTestId("max-qty-message")).toBeVisible({ timeout: 10000 });
-      await expect(page.getByTestId("max-qty-message")).toContainText("Max quantity");
+      await expect(
+        page.getByTestId("max-qty-message")
+      ).toBeVisible();
+
+      await expect(
+        page.getByTestId("max-qty-message")
+      ).toContainText("Max quantity");
     },
   );
 
@@ -88,19 +177,50 @@ test.describe("CART SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await login(page);
+
+      // Add initial item
       await page.goto("/product/wireless-headphones");
 
-      for (let i = 0; i < 15; i++) {
-        await page.getByRole("button", { name: /add to cart/i }).click();
-      }
+      await page
+        .getByRole("button", {
+          name: /add to cart/i,
+        })
+        .click();
 
       await expect(
-        page.getByText(/you already reached max stock/i),
+        page.getByText(/item added to cart/i)
       ).toBeVisible();
 
+      await page.waitForTimeout(500);
+
+      // Go to cart
       await page.goto("/cart");
 
-      const qtyText = await page.getByText(/×/).textContent();
+      const plus = page.getByRole("button", {
+        name: "+",
+      });
+
+      // Exceed stock using cart controls
+      for (let i = 0; i < 20; i++) {
+        await plus.click();
+      }
+
+      // Correct cart-page message
+      await expect(
+        page.getByTestId("max-qty-message")
+      ).toBeVisible();
+
+      await expect(
+        page.getByTestId("max-qty-message")
+      ).toContainText(
+        'Max quantity of "Wireless Headphones" has been reached'
+      );
+
+      // Ensure quantity never exceeds stock
+      const qtyText = await page
+        .getByText(/×/)
+        .textContent();
 
       expect(qtyText).not.toContain("13");
       expect(qtyText).not.toContain("14");

@@ -114,11 +114,29 @@ test.describe("DETAIL SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      await page.goto("/login");
+
+      await page
+        .getByPlaceholder("Enter password")
+        .fill("user123");
+
+      await page
+        .getByRole("button", { name: /login/i })
+        .click();
+
+      await page.waitForURL("/");
+
       await page.goto("/product/wireless-headphones");
 
-      await page.getByRole("button", { name: /add to cart/i }).click();
+      await page
+        .getByRole("button", {
+          name: /add to cart/i,
+        })
+        .click();
 
-      await expect(page.getByText(/item added to cart/i)).toBeVisible();
+      await expect(
+        page.getByText(/item added to cart/i)
+      ).toBeVisible();
     },
   );
 });
