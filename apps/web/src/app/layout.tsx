@@ -103,7 +103,7 @@ export default async function RootLayout({
 
                   {/* CATEGORIES */}
                   <div>
-                    <p className="font-semibold mb-2">Categories</p>
+                    <h2 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Categories</h2>
                     <ul className="space-y-2">
                       <CategoryList products={activeProducts} />
                     </ul>
@@ -111,7 +111,7 @@ export default async function RootLayout({
 
                   {/* HISTORY */}
                   <div>
-                    <p className="font-semibold mb-2">History</p>
+                    <h2 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">History</h2>
                     <ul className="space-y-2">
                       {Array.from(
                         activeProducts.reduce((acc, product) => {
@@ -132,9 +132,13 @@ export default async function RootLayout({
                           <li key={key}>
                             <Link
                               href={`/history/${year}/${month}`}
-                              className="text-gray-500"
+                              className="text-gray-700 dark:text-gray-200 hover:underline hover:text-black dark:hover:text-white"
                             >
-                              {label} {year} <span>{count}</span>
+                              {label} {year}
+                              <span className="ml-2 inline-flex items-center justify-center 
+                              min-w-[22px] h-[22px] px-2 rounded-full bg-gray-700 text-white 
+                              text-xs font-semibold">
+                                {count}</span>
                             </Link>
                           </li>
                         );
