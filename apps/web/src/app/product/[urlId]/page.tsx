@@ -5,12 +5,15 @@ import { products } from "@repo/db/data";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { useCart } from "@/components/Cart/CartContext";
+import { useRouter } from "next/navigation";
 
 export default function Page({
   params,
 }: {
   params: Promise<{ urlId: string }>;
 }) {
+  const router = useRouter();
+
   const { urlId } = use(params);
 
   const [popupMessage, setPopupMessage] = useState("");
@@ -25,11 +28,25 @@ export default function Page({
   const currentQuantity =
     cart.find((item) => item.id === product.id)?.quantity || 0;
 
-  function handleAddToCart() {
+  function getCookie(name: string) {
+    return document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(name + "="));
+  }
+
+  async function handleAddToCart() {
+    const res = await fetch("/api/auth/me");
+    const data = await res.json();
+
+    if (!data.loggedIn) {
+      router.push("/login");
+      return;
+    }
+
     if (!product) return;
 
     if (currentQuantity >= product.stock) {
-      setPopupMessage("You already reached max stock for this item");
+      setPopupMessage("Max stock reached");
       setTimeout(() => setPopupMessage(""), 4000);
       return;
     }

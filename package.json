@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^25.6.0",
     "prettier": "^3.4.2",
     "turbo": "^2.3.4",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",
+    "jsonwebtoken": "^9.0.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prisma": "^6.3.1",
     "react-markdown": "^10.1.0"

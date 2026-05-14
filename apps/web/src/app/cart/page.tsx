@@ -2,22 +2,53 @@
 
 import { useCart } from "@/components/Cart/CartContext";
 import Link from "next/link";
-import { useState, useRef} from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
+  const router = useRouter();
+
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
+
   const [checkedOut, setCheckedOut] = useState(false);
   const [message, setMessage] = useState("");
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ✅ AUTH CHECK (prevents cart access if not logged in)
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+
+        if (!data.loggedIn) {
+          router.push("/login");
+          return;
+        }
+
+        setCheckingAuth(false);
+      } catch {
+        router.push("/login");
+      }
+    }
+
+    checkAuth();
+  }, [router]);
+
+  function handleCheckout() {
+    setCheckedOut(true);
+    clearCart();
+  }
 
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  function handleCheckout() {
-    setCheckedOut(true);
-    clearCart();
+  if (checkingAuth) {
+    return <p className="p-10">Checking login...</p>;
   }
 
   if (checkedOut) {
@@ -33,6 +64,8 @@ export default function CartPage() {
   return (
     <div className="p-10 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
+
+      {/* MAX QUANTITY MESSAGE (IMPORTANT FOR TESTS) */}
       {message && (
         <div
           data-test-id="max-qty-message"
@@ -65,6 +98,7 @@ export default function CartPage() {
                     ${item.price.toFixed(2)} each × {item.quantity}
                   </p>
 
+                  {/* ✅ QUANTITY CONTROLS RESTORED */}
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() =>
@@ -84,7 +118,9 @@ export default function CartPage() {
                         const reachedMax = updateQuantity(item.id, nextQty);
 
                         if (reachedMax) {
-                          setMessage(`Max quantity of "${item.title}" has been reached`);
+                          setMessage(
+                            `Max quantity of "${item.title}" has been reached`
+                          );
 
                           if (timeoutRef.current) {
                             clearTimeout(timeoutRef.current);
@@ -113,7 +149,7 @@ export default function CartPage() {
           ))}
 
           <div className="mt-6 font-bold text-xl">
-            Total: ${total}
+            Total: ${total.toFixed(2)}
           </div>
 
           <button

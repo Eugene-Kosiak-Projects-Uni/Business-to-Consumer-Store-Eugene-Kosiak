@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import "./globals.css";
-import { toUrlPath } from "@repo/utils/url";
 import { TagList } from "@/components/Menu/TagList";
 import { CategoryList } from "@/components/Menu/CategoryList";
 import { products } from "@repo/db/data";
@@ -12,11 +11,14 @@ import { ThemeProvider } from "@/components/Themes/ThemeContext";
 import ThemeSwitch from "@/components/Themes/ThemeSwitcher";
 import SearchBox from "@/components/SearchBox";
 import { CartProvider } from "@/components/Cart/CartContext";
+import jwt from "jsonwebtoken";
+import { LogoutButton } from "@/components/Auth/LogoutButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -32,9 +34,23 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const serverCookies = await cookies();
+  const cookieStore = await cookies();
+
   const theme =
-    (serverCookies.get("theme")?.value || "light") as "light" | "dark";
+    (cookieStore.get("theme")?.value || "light") as "light" | "dark";
+
+  const token = cookieStore.get("user_auth_token")?.value;
+
+  let loggedIn = false;
+
+  try {
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET || "user-secret-key");
+      loggedIn = true;
+    }
+  } catch {
+    loggedIn = false;
+  }
 
   const activeProducts = products.filter((p) => p.active);
 
@@ -44,18 +60,38 @@ export default async function RootLayout({
         <ThemeProvider initialTheme={theme}>
           <CartProvider>
             <div className="flex h-screen">
+
               {/* SIDEBAR */}
               <aside className="w-64 border-r p-6">
                 <Link href="/" className="block mb-6">
                   <div className="flex items-center gap-2">
-                    <Image src="/wsuLogo.png" alt="Logo" width={40} height={40} />
+                    <Image
+                      src="/wsuLogo.png"
+                      alt="Logo"
+                      width={40}
+                      height={40}
+                    />
                     <h1 className="text-xl font-bold">B2C Store</h1>
                   </div>
                 </Link>
 
                 <nav className="space-y-6">
 
-                  {/* Cart link */}
+                  {/* AUTH SECTION */}
+                  <div className="mb-4">
+                    {!loggedIn ? (
+                      <Link
+                        href="/login"
+                        className="text-blue-600 font-semibold hover:underline"
+                      >
+                        Login
+                      </Link>
+                    ) : (
+                      <LogoutButton />
+                    )}
+                  </div>
+
+                  {/* CART */}
                   <div>
                     <Link
                       href="/cart"
@@ -68,7 +104,6 @@ export default async function RootLayout({
                   {/* CATEGORIES */}
                   <div>
                     <p className="font-semibold mb-2">Categories</p>
-
                     <ul className="space-y-2">
                       <CategoryList products={activeProducts} />
                     </ul>
@@ -114,6 +149,7 @@ export default async function RootLayout({
 
               {/* MAIN AREA */}
               <div className="flex-1 flex flex-col">
+
                 <header className="flex justify-between p-4 border-b">
                   <SearchBox />
                   <ThemeSwitch />
@@ -122,9 +158,9 @@ export default async function RootLayout({
                 <main className="p-6 overflow-y-auto">
                   {children}
                 </main>
+
               </div>
             </div>
-
           </CartProvider>
         </ThemeProvider>
       </body>
