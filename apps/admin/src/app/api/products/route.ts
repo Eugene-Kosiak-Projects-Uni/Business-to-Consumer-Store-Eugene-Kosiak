@@ -1,3 +1,4 @@
+/*
 import { prisma } from "@repo/db/prisma";
 
 // simple slug function
@@ -42,4 +43,77 @@ export async function POST(req: Request) {
   });
 
   return Response.json(post);
+}
+*/
+
+import { NextResponse } from "next/server";
+
+// in-memory fake store (resets on reload, fine for assignment)
+let mockProducts: any[] = [];
+
+function generateUrlId(title: string) {
+  return title
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+
+  const {
+    title,
+    description,
+    content,
+    tags,
+    imageUrl,
+    category,
+    brand,
+    price,
+    stock,
+    rating,
+    featured,
+    active,
+  } = body;
+
+  if (
+    !title?.trim() ||
+    !description?.trim() ||
+    !content?.trim() ||
+    !imageUrl?.trim() ||
+    !category?.trim() ||
+    !brand?.trim()
+  ) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  const newProduct = {
+    id: mockProducts.length + 1, 
+
+    urlId: generateUrlId(title),
+
+    title,
+    description,
+    content,
+    tags: tags || "",
+    imageUrl,
+    category,
+    brand,
+
+    // 👇 safe conversions (IMPORTANT FIX)
+    price: Number(price ?? 0),
+    stock: Number(stock ?? 0),
+    rating: Number(rating ?? 0),
+
+    featured: Boolean(featured),
+    active: Boolean(active),
+  };
+
+  mockProducts.push(newProduct);
+
+  return NextResponse.json(newProduct, { status: 200 });
 }

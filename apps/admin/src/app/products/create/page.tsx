@@ -1,6 +1,6 @@
 import { isLoggedIn } from "../../../utils/auth";
 import { redirect } from "next/dist/client/components/navigation";
-import PostForm from "../../components/PostForm";
+import PostForm from "../../components/ProductForm";
 
 export default async function CreatePage() {
   const loggedIn = await isLoggedIn();
@@ -9,12 +9,12 @@ export default async function CreatePage() {
     redirect("/admin/login");
   }
 
-  // Render Create Post Screen
+  // Render Create Product Screen
   return (
     <main>
       <PostForm 
-        action="/api/posts" 
-        title="Create Post"
+        action="/api/products" 
+        title="Create Product"
       />
     </main>
   );

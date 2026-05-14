@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
-import { prisma } from "@repo/db/prisma";
-import PostList from "./components/PostList";
+//import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
+import ProductList from "./components/ProductList";
 
 export default async function Home() {
   /* 1. Checks for JWT token
@@ -63,9 +64,11 @@ export default async function Home() {
 
   // 5. Shows admin content if valid
   // Fetch from database
+  /*
   const posts = await prisma.post.findMany({
     orderBy: { id: "asc" },
   });
+  */
 
-  return <PostList posts={posts} />;
+  return <ProductList products={products} />;
 }

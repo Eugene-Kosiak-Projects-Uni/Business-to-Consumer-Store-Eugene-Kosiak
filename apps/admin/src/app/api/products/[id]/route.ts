@@ -1,3 +1,4 @@
+/*
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@repo/db/prisma";
 
@@ -46,4 +47,60 @@ export async function POST(
     console.error(error);
     return new NextResponse("Server error", { status: 500 }); // 500 - server error
   }
+}
+*/
+
+import { NextRequest, NextResponse } from "next/server";
+
+// shared in-memory store (IMPORTANT: must match create route)
+let mockProducts: any[] = [];
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const id = Number(params.id);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new NextResponse("Invalid JSON body", { status: 400 });
+  }
+
+  const { title, description, content, tags, imageUrl, category } = body;
+
+  if (
+    !title?.trim() ||
+    !description?.trim() ||
+    !content?.trim() ||
+    !imageUrl?.trim() ||
+    !category?.trim()
+  ) {
+    return NextResponse.json(
+      { error: "Missing fields" },
+      { status: 400 }
+    );
+  }
+
+  const index = mockProducts.findIndex((p) => p.id === id);
+
+  if (index === -1) {
+    return NextResponse.json(
+      { error: "Product not found" },
+      { status: 404 }
+    );
+  }
+
+  mockProducts[index] = {
+    ...mockProducts[index],
+    title,
+    description,
+    content,
+    tags: tags || "",
+    imageUrl,
+    category,
+  };
+
+  return NextResponse.json(mockProducts[index]);
 }
