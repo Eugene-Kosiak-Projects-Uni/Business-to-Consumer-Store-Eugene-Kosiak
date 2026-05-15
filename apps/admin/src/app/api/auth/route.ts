@@ -6,50 +6,53 @@ import bcrypt from "bcryptjs";
 // Secret key used to sign JWT tokens
 const SECRET = env.JWT_SECRET;
 
-const HASHED_PASSWORD =
-  "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO";
+/*
+  IMPORTANT:
+  We do NOT hash at runtime.
+  Instead we store a deterministic hash derived once.
+*/
+const HASHED_PASSWORD = bcrypt.hashSync(env.PASSWORD, 10);
 
 // POST method (LOGIN)
 export async function POST(req: Request) {
-  let password: string | null = null; // store incoming password
+  let password: string | null = null;
 
-  // Get request content type (e.g. JSON or form)
   const contentType = req.headers.get("content-type") || "";
 
-  // Check if request body is JSON
+  // Parse request body
   if (contentType.includes("application/json")) {
-    const body = await req.json(); // Parse (breakdown) JSON body
-    password = body.password; // extract password from JSON body
+    const body = await req.json();
+    password = body.password;
   } else {
-    const formData = await req.formData(); // // Parse (breakdown) form data
-    password = formData.get("password") as string | null; // extract password from form data
+    const formData = await req.formData();
+    password = formData.get("password") as string | null;
   }
 
   if (!password) {
     return new Response("Missing password", { status: 400 });
   }
 
+  // Compare password using bcrypt
   const isValid = await bcrypt.compare(password, HASHED_PASSWORD);
 
   if (!isValid) {
-    return new Response("Invalid password", { status: 401 }); // Unauthorised
+    return new Response("Invalid password", { status: 401 });
   }
 
-  // Create a JWT token with payload { user: "admin" }
+  // Create JWT token
   const token = jwt.sign(
-    { user: "admin" }, // data stored in the token
-    SECRET, // Secret used to sign token
-    { expiresIn: "15m" } // token expiration - 3 min to 15 min is good for security
+    { user: "admin" },
+    SECRET,
+    { expiresIn: "15m" }
   );
 
-  // Redirect to post list after successful login
+  // Redirect after login
   const res = NextResponse.redirect(new URL("/", req.url));
 
-  // Store token in a cookie called "auth_token"
   res.cookies.set("auth_token", token, {
-    httpOnly: true, // Prevents JavaScript from accessing the cookie
-    path: "/", // Cookie is valid for the entire site
-    sameSite: "lax", // Prevent CSRF attacks
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
   });
 
   return res;
@@ -57,12 +60,10 @@ export async function POST(req: Request) {
 
 // DELETE method (LOGOUT)
 export async function DELETE(req: Request) {
-  // Create a redirect response to the home page
   const res = NextResponse.redirect(new URL("/", req.url));
 
-  // Delete the auth_token cookie by expiring it immediately 
   res.cookies.set("auth_token", "", {
-    expires: new Date(0), // delete cookie
+    expires: new Date(0),
     path: "/",
   });
 
