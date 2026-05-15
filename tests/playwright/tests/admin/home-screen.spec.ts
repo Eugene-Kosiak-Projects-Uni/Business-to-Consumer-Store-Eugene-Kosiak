@@ -73,3 +73,64 @@ test.describe("ADMIN HOME SCREEN", () => {
   );
 });
 */
+
+test.describe("ADMIN HOME SCREEN", () => {
+  test(
+    "Shows login screen",
+    {
+      tag: "@a2",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+      await expect(page.getByText("Sign In", { exact: true })).toBeVisible();
+
+      await expect(
+        page.getByText("Sign in to your account", { exact: true }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "Can login",
+    {
+      tag: "@a2",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+
+      await page.getByLabel("Password", { exact: true }).fill("admin123");
+      await page.getByText("Sign In", { exact: true }).click();
+
+      await expect(page.getByText("Admin of Products")).toBeVisible();
+
+      const cookies = await page.context().cookies();
+      const passwordCookie = cookies.find(
+        (cookie) => cookie.name === "auth_token",
+      );
+      expect(passwordCookie).toBeDefined();
+
+      await expect(page.getByText("Logout")).toBeVisible();
+
+      await page.getByText("Logout").click();
+
+      await expect(await page.locator("article")).toHaveCount(0);
+      await expect(page.getByText("Sign in to your account")).toBeVisible();
+    },
+  );
+
+  test(
+    "Shows home screen to authorised user",
+    {
+      tag: "@a2",
+    },
+    async ({ userPage }) => {
+      await userPage.goto("/");
+
+      await expect(
+        userPage.getByText("Admin of Products", { exact: true }),
+      ).toBeVisible();
+
+      await expect(await userPage.locator("article").count()).toBe(4);
+    },
+  );
+});

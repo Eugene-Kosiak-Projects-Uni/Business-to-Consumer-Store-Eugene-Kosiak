@@ -1,3 +1,8 @@
+export async function seed() {
+
+}
+
+/* - Seed file for posts prisma
 import { PrismaClient } from "@prisma/client";
 import { products } from "@repo/db/data";
 
@@ -39,3 +44,4 @@ export async function seed() {
     }
   }
 }
+*/
