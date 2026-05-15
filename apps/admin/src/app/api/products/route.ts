@@ -45,12 +45,10 @@ export async function POST(req: Request) {
   return Response.json(post);
 }
 */
-
 import { NextResponse } from "next/server";
+import { products } from "@repo/db/data";
 
-// in-memory fake store (resets on reload, fine for assignment)
-let mockProducts: any[] = [];
-
+// simple slug function
 function generateUrlId(title: string) {
   return title
     .trim()
@@ -92,7 +90,7 @@ export async function POST(req: Request) {
   }
 
   const newProduct = {
-    id: mockProducts.length + 1, 
+    id: products.length + 1,
 
     urlId: generateUrlId(title),
 
@@ -104,7 +102,9 @@ export async function POST(req: Request) {
     category,
     brand,
 
-    // 👇 safe conversions (IMPORTANT FIX)
+    // REQUIRED FIELD
+    date: new Date(),
+
     price: Number(price ?? 0),
     stock: Number(stock ?? 0),
     rating: Number(rating ?? 0),
@@ -113,7 +113,9 @@ export async function POST(req: Request) {
     active: Boolean(active),
   };
 
-  mockProducts.push(newProduct);
+  // add product to mock data array
+  products.push(newProduct);
 
+  // return successful response
   return NextResponse.json(newProduct, { status: 200 });
 }

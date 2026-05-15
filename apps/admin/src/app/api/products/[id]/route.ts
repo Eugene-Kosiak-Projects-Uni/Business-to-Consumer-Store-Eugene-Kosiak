@@ -49,41 +49,60 @@ export async function POST(
   }
 }
 */
-
 import { NextRequest, NextResponse } from "next/server";
-
-// shared in-memory store (IMPORTANT: must match create route)
-let mockProducts: any[] = [];
+import { products } from "@repo/db/data";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const id = Number(params.id);
+  const { id } = await context.params;
+
+  const productId = Number(id);
 
   let body;
+
   try {
     body = await request.json();
   } catch {
-    return new NextResponse("Invalid JSON body", { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid JSON" },
+      { status: 400 }
+    );
   }
 
-  const { title, description, content, tags, imageUrl, category } = body;
+  const {
+    title,
+    description,
+    content,
+    tags,
+    imageUrl,
+    category,
+    brand,
+    price,
+    stock,
+    rating,
+    featured,
+    active,
+  } = body;
 
   if (
     !title?.trim() ||
     !description?.trim() ||
     !content?.trim() ||
     !imageUrl?.trim() ||
-    !category?.trim()
+    !category?.trim() ||
+    !brand?.trim()
   ) {
     return NextResponse.json(
-      { error: "Missing fields" },
+      { error: "Missing required fields" },
       { status: 400 }
     );
   }
 
-  const index = mockProducts.findIndex((p) => p.id === id);
+  const index = products.findIndex(
+    (product) => product.id === productId
+  );
 
   if (index === -1) {
     return NextResponse.json(
@@ -92,15 +111,28 @@ export async function POST(
     );
   }
 
-  mockProducts[index] = {
-    ...mockProducts[index],
+  const existingProduct = products[index]!;
+
+  products[index] = {
+    id: existingProduct.id,
+    urlId: existingProduct.urlId,
+    date: existingProduct.date,
+
     title,
     description,
     content,
     tags: tags || "",
     imageUrl,
     category,
+    brand,
+
+    price: Number(price ?? 0),
+    stock: Number(stock ?? 0),
+    rating: Number(rating ?? 0),
+
+    featured: Boolean(featured),
+    active: Boolean(active),
   };
 
-  return NextResponse.json(mockProducts[index]);
+  return NextResponse.json(products[index]);
 }
