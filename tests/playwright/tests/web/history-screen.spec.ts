@@ -39,41 +39,49 @@ test.describe("HISTORY SCREEN", () => {
   );
 });
 */
-
 test.describe("HISTORY SCREEN", () => {
   test(
     "January 2025 History",
-    {
-      tag: "@a1",
-    },
+    { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/history/2025/1");
 
+      // Running Shoes is in Jan 2025
       await expect(
-        page.getByText("Wireless Headphones"),
+        page.getByRole("link", { name: "Running Shoes" }),
       ).toBeVisible();
     },
   );
 
   test(
-    "March 2025 History",
-    {
-      tag: "@a1",
-    },
+    "February 2025 History",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/history/2025/3");
+      await page.goto("/history/2025/2");
 
+      // Wireless Headphones is in Feb 2025
       await expect(
-        page.getByText("RGB Gaming Keyboard"),
+        page.getByRole("link", { name: "Wireless Headphones" }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "November 2024 History",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/history/2024/11");
+
+      // RGB Keyboard is in Nov 2024
+      await expect(
+        page.getByRole("link", { name: "RGB Gaming Keyboard" }),
       ).toBeVisible();
     },
   );
 
   test(
     "Invalid History",
-    {
-      tag: "@a1",
-    },
+    { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/history/2024/1");
 

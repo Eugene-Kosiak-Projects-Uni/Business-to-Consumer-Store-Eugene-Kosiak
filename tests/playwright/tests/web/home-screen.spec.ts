@@ -247,15 +247,15 @@ test.describe("HOME SCREEN", () => {
       ).toBeVisible();
 
       await expect(
-        page.getByRole("link", { name: /March 2025/i }),
+        page.getByRole("link", { name: /February 2025/i }),
       ).toBeVisible();
 
       await expect(
-        page.getByRole("link", { name: /June 2025/i }),
+        page.getByRole("link", { name: /November 2024/i }),
       ).toBeVisible();
 
       await expect(
-        page.getByRole("link", { name: /September 2025/i }),
+        page.getByRole("link", { name: /December 2024/i }),
       ).toBeVisible();
     },
   );
