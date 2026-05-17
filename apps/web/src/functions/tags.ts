@@ -1,10 +1,10 @@
-export async function tags(posts: { tags: string; active: boolean }[]) {
+export async function tags(products: { tags: string; active: boolean }[]) {
   const map = new Map<string, number>(); // stores count for how many times a tag appears
 
-  posts
-    .filter((p) => p.active) // filter active posts
-    .forEach((post) => {
-      post.tags.split(",").forEach((tag) => {
+  products
+    .filter((p) => p.active) // filter active products
+    .forEach((product) => {
+      product.tags.split(",").forEach((tag) => {
         const t = tag.trim();
         map.set(t, (map.get(t) || 0) + 1); // count tags, if tag exists increment count, else set to 1
       });
