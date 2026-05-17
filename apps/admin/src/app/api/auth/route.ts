@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { env } from "@repo/env/admin";
 
 // Secret key used to sign JWT tokens
 const SECRET = env.JWT_SECRET;
-
-// hashed version of "admin123"
-const HASHED_PASSWORD =
-  "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO";
 
 // POST method (LOGIN)
 export async function POST(req: Request) {
@@ -22,17 +17,15 @@ export async function POST(req: Request) {
     const body = await req.json(); // Parse (breakdown) JSON body
     password = body.password; // extract password from JSON body
   } else {
-    const formData = await req.formData(); // Parse form data
-    password = formData.get("password") as string | null;
+    const formData = await req.formData(); // // Parse (breakdown) form data
+    password = formData.get("password") as string | null; // extract password from form data
   }
 
   if (!password) {
     return new Response("Missing password", { status: 400 });
   }
 
-  const isValid = await bcrypt.compare(password, HASHED_PASSWORD);
-
-  if (!isValid) {
+  if (password !== "admin123") {
     return new Response("Invalid password", { status: 401 }); // 401 - unauthorized
   }
 
