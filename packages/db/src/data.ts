@@ -155,3 +155,17 @@ export const products: Product[] = [
     active: true,
   },
 ];
+
+
+export type Purchase = {
+  id: number;
+  userId: string;
+  date: Date;
+  items: {
+  productId: number;
+  title: string;
+  price: number;
+  quantity: number;
+  }[];
+  total: number;
+};

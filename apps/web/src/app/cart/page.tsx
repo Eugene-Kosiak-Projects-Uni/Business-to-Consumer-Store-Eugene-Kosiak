@@ -36,9 +36,16 @@ export default function CartPage() {
     checkAuth();
   }, [router]);
 
-  function handleCheckout() {
-    setCheckedOut(true);
-    clearCart();
+  async function handleCheckout() {
+    const res = await fetch("/api/purchase", {
+      method: "POST",
+      body: JSON.stringify({ cart }),
+    });
+
+    if (res.ok) {
+      setCheckedOut(true);
+      clearCart();
+    }
   }
 
   const total = cart.reduce(

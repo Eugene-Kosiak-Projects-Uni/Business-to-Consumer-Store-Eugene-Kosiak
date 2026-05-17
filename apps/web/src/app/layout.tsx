@@ -145,6 +145,9 @@ export default async function RootLayout({
                       })}
                     </ul>
                   </div>
+                  <div>
+                    <Link href="/purchases">Purchase History</Link>
+                  </div>
 
                   {/* TAGS */}
                   <TagList products={activeProducts} />
