@@ -33,7 +33,6 @@ test.describe("CART SCREEN", () => {
         page.getByText(/item added to cart/i)
       ).toBeVisible();
 
-      // IMPORTANT
       await page.waitForTimeout(500);
 
       await page.goto("/cart");
@@ -66,11 +65,8 @@ test.describe("CART SCREEN", () => {
         page.getByText(/item added to cart/i)
       ).toBeVisible();
 
-      // IMPORTANT
       await page.waitForTimeout(500);
-
       await page.goto("/cart");
-
       await expect(
         page.getByText("Wireless Headphones")
       ).toBeVisible();
@@ -101,9 +97,7 @@ test.describe("CART SCREEN", () => {
         page.getByText(/item added to cart/i)
       ).toBeVisible();
 
-      // IMPORTANT
       await page.waitForTimeout(500);
-
       await page.goto("/cart");
 
       await expect(
@@ -146,9 +140,7 @@ test.describe("CART SCREEN", () => {
         page.getByText(/item added to cart/i)
       ).toBeVisible();
 
-      // IMPORTANT
       await page.waitForTimeout(500);
-
       await page.goto("/cart");
 
       const plus = page.getByRole("button", {
@@ -201,16 +193,17 @@ test.describe("CART SCREEN", () => {
         name: "+",
       });
 
-      // Exceed stock using cart controls
+      // Exceed stock using cart buttons '+'
       for (let i = 0; i < 20; i++) {
         await plus.click();
       }
 
-      // Correct cart-page message
+      // Expect correct cart-page message
       await expect(
         page.getByTestId("max-qty-message")
       ).toBeVisible();
 
+      // Expect stock exceeding message
       await expect(
         page.getByTestId("max-qty-message")
       ).toContainText(
