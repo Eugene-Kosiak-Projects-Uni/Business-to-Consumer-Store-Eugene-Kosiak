@@ -10,13 +10,6 @@ export function Main({
 }) {
   return (
     <main className={className || ""}>
-      <h1 className="text-3xl font-bold mb-2 text-primary">
-        From the blog
-      </h1>
-
-      <p className="text-secondary mb-8">
-        Learn how to grow your business with our expert advice.
-      </p>
 
       {products.length === 0 ? (
         <p className="text-secondary">0 Products</p>
