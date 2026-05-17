@@ -32,6 +32,16 @@ export async function GET() {
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
+
+  const isTestReset =
+    req.headers.get("x-test-reset") === "true" &&
+    searchParams.get("reset") === "true";
+
+  if (isTestReset) {
+    purchases = [];
+    return Response.json({ reset: true });
+  }
+
   const id = Number(searchParams.get("id"));
 
   const index = purchases.findIndex((p) => p.id === id);
