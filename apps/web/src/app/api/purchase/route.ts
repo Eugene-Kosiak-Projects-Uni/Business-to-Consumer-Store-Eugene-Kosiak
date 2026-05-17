@@ -29,3 +29,21 @@ export async function POST(req: Request) {
 export async function GET() {
   return Response.json(purchases);
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = Number(searchParams.get("id"));
+
+  const index = purchases.findIndex((p) => p.id === id);
+
+  if (index === -1) {
+    return Response.json(
+      { error: "Purchase not found" },
+      { status: 404 }
+    );
+  }
+
+  purchases.splice(index, 1);
+
+  return Response.json({ success: true });
+}

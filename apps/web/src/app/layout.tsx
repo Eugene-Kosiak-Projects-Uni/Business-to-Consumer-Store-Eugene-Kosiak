@@ -100,6 +100,16 @@ export default async function RootLayout({
                       🛒 Cart
                     </Link>
                   </div>
+                  {loggedIn && (
+                    <div>
+                      <Link
+                        href="/purchases"
+                        className="text-blue-600 font-semibold hover:underline"
+                      >
+                        📦 Purchase History
+                      </Link>
+                    </div>
+                  )}
 
                   {/* CATEGORIES */}
                   <div>
@@ -144,9 +154,6 @@ export default async function RootLayout({
                         );
                       })}
                     </ul>
-                  </div>
-                  <div>
-                    <Link href="/purchases">Purchase History</Link>
                   </div>
 
                   {/* TAGS */}
