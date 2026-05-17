@@ -109,12 +109,19 @@ test.describe("ADMIN HOME SCREEN", () => {
       );
       expect(passwordCookie).toBeDefined();
 
-      await expect(page.getByText("Logout")).toBeVisible();
-
       await page.getByText("Logout").click();
 
-      await expect(await page.locator("article")).toHaveCount(0);
-      await expect(page.getByText("Sign in to your account")).toBeVisible();
+      // wait for logout request to complete
+      await page.waitForResponse((res) =>
+        res.url().includes("/api/auth") && res.request().method() === "DELETE"
+      );
+
+      // wait for UI to settle back to login state
+      await expect(
+        page.getByText("Sign in to your account"),
+      ).toBeVisible();
+
+      await expect(page.locator("article")).toHaveCount(0);
     },
   );
 

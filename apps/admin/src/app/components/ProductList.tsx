@@ -139,7 +139,7 @@ export default function ProductList({ products }: { products: Product[] }) {
             method: "DELETE",
           });
 
-          window.location.href = "/"; // redirect to login screen
+          window.location.replace("/"); // redirect to login screen
         }}
         className="mb-4"
       >
