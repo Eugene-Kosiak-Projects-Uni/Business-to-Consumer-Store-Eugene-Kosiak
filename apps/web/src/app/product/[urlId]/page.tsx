@@ -15,19 +15,22 @@ export default function Page({
   const router = useRouter();
 
   const { urlId } = use(params);
-
+  // Store state of the pop up message
   const [popupMessage, setPopupMessage] = useState("");
   const { addToCart, cart } = useCart();
 
+  // Find product based on their urlId
   const product = products.find((p) => p.urlId === urlId);
 
   if (!product) {
     return <div className="max-w-4xl mx-auto px-6 py-10">Product not found</div>;
   }
 
+  // Variable for current Quantity the user wants, initially at 0
   const currentQuantity =
     cart.find((item) => item.id === product.id)?.quantity || 0;
 
+  // Check if this is used at all:
   function getCookie(name: string) {
     return document.cookie
       .split("; ")
@@ -35,16 +38,19 @@ export default function Page({
   }
 
   async function handleAddToCart() {
+    // Fetch login data
     const res = await fetch("/api/auth/me");
     const data = await res.json();
 
+    // If data does not show that someone logged in then, redirect to login page
     if (!data.loggedIn) {
       router.push("/login");
       return;
     }
 
-    if (!product) return;
+    if (!product) return; // Returns nothing if no product added to cart
 
+    // Prevents buying more than what the product stock has
     if (currentQuantity >= product.stock) {
       setPopupMessage("Max stock reached");
       setTimeout(() => setPopupMessage(""), 4000);

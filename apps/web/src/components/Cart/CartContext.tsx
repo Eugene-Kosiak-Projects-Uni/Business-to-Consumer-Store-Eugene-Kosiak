@@ -67,8 +67,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setCart((prev) =>
         prev.map((p) => {
           if (p.id !== id) return p;
-
-
           /*
             If too high → cap at max
             Else → allow value
