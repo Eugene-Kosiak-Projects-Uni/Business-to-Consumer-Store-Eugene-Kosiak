@@ -10,13 +10,26 @@ test.describe("DETAIL SCREEN", () => {
     async ({ page }) => {
       await page.goto("/product/wireless-headphones");
 
-      await expect(page.getByText("Wireless Headphones")).toBeVisible();
+      await expect(
+        page.getByRole("heading", {
+          name: "Wireless Headphones",
+        })
+      ).toBeVisible();
 
-      await expect(page.getByText(/wireless headphones/i)).toBeVisible(); // description check
+      // description paragraph specifically
+      await expect(
+        page.locator("p").filter({
+          hasText: /Experience premium sound quality/i,
+        })
+      ).toBeVisible();
 
       await expect(page.getByText("$199 AUD")).toBeVisible();
 
-      await expect(page.getByRole("button", { name: /add to cart/i })).toBeVisible();
+      await expect(
+        page.getByRole("button", {
+          name: /add to cart/i,
+        })
+      ).toBeVisible();
     },
   );
 

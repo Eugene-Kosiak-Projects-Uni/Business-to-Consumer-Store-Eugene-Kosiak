@@ -1,7 +1,18 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { Product } from "@repo/db/data";
+//import type { Product } from "@repo/db/data";
+
+type Product = {
+  id: number;
+  urlId: string;
+  title: string;
+  description: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+  content: string;
+};
 
 type CartItem = Product & { quantity: number };
 
