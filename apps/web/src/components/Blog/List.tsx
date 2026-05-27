@@ -1,3 +1,4 @@
+/*
 import type { Post } from "@prisma/client";
 import Link from "next/link";
 
@@ -55,3 +56,4 @@ export default function BlogList({ posts }: BlogListProps) {
     </div>
   );
 }
+  */

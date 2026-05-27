@@ -1,3 +1,4 @@
+/*
 import type { Post } from "@prisma/client";
 import Link from "next/link";
 
@@ -35,3 +36,4 @@ export function BlogListItem({ post }: { post: PostWithOptionalCount }) {
     </article>
   );
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import type { Post } from "@repo/db/data";
 import { expect, test } from "vitest";
 import { render } from "vitest-browser-react";
@@ -47,3 +48,4 @@ test("renders all posts", async () => {
   await expect.element(component.getByText("Hello World")).toBeInTheDocument();
   await expect.element(component.getByText("Hola Mundo")).toBeInTheDocument();
 });
+*/
