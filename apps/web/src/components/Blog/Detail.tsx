@@ -1,3 +1,4 @@
+/*
 import type { Post } from "@prisma/client";
 import { marked } from "marked";
 
@@ -8,3 +9,4 @@ export async function BlogDetail({ post }: { post: Post }) {
   // return output
   return <article data-test-id={`blog-post-${post.id}`}>Detail</article>;
 }
+*/
