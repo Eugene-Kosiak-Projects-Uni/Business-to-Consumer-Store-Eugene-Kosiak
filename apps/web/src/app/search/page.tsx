@@ -1,5 +1,5 @@
 import { Main } from "@/components/Main";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export default async function Page({
   searchParams,
@@ -10,11 +10,14 @@ export default async function Page({
 
   const query = (params.q || "").toLowerCase();
 
+  const products = await prisma.product.findMany({
+    where: { active: true },
+  });
+
   const filteredProducts = products.filter((p) => {
     return (
-      p.active &&
-      (p.title.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query))
+      p.title.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query)
     );
   });
 

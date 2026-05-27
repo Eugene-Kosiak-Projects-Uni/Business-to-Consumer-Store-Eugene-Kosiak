@@ -1,53 +1,29 @@
 import { NextResponse } from "next/server";
-import { products } from "@repo/db/data";
-
-export async function POST(req: Request) {
-  // Get id from request body (JSON data sent from frontend to backend)
-  const { id } = await req.json();
-
-  // Find product with matching id
-  const product = products.find(
-    (product) => product.id === Number(id)
-  );
-
-  if (!product) {
-    return new NextResponse(
-      "Product not found",
-      { status: 404 }
-    );
-  }
-
-  // Toggle active status
-  product.active = !product.active;
-
-  // Return updated product
-  return NextResponse.json(product);
-}
-
-/* - Post prisma data
 import { prisma } from "@repo/db/prisma";
 
 export async function POST(req: Request) {
   // Get id from request body (JSON data sent from frontend to backend)
   const { id } = await req.json();
 
-  // Go to Post table and find post with specific id
-  const post = await prisma.post.findUnique({
-    where: { id }, // Find post that matches id
+  const productId = Number(id);
+
+  // Find product with matching id
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
   });
 
-  if (!post) {
-    return new Response("Post not found", { status: 404 }); // 404 - not found
+  if (!product) {
+    return new NextResponse("Product not found", { status: 404 });
   }
 
-  // Update posts active status
-  const updated = await prisma.post.update({
-    where: { id },
-    data: { // update post with active status
-      active: !post.active,
+  // Toggle active status
+  const updated = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      active: !product.active,
     },
   });
 
-  return Response.json(updated);
+  // Return updated product
+  return NextResponse.json(updated);
 }
-*/

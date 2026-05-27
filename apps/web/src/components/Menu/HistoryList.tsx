@@ -1,6 +1,5 @@
 import { history } from "@/functions/history";
-//import type { Post } from "@prisma/client";
-import type { Product } from "@repo/db/data";
+import type { Product } from "@prisma/client";
 
 const months = [
   "",

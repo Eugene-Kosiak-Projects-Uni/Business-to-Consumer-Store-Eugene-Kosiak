@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import ProductForm from "../../components/ProductForm";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export default async function PostPage({
   params,
@@ -27,8 +27,10 @@ export default async function PostPage({
     );
   }
 
-  // Fetch product from MOCK DATA using urlId
-  const product = products.find((p) => p.urlId === urlId);
+  // Fetch product from DB using urlId
+  const product = await prisma.product.findUnique({
+    where: { urlId },
+  });
 
   if (!product) {
     return <main>Product not found</main>;
@@ -40,7 +42,20 @@ export default async function PostPage({
       <ProductForm
         action={`/api/products/${product.id}`}
         title="Edit Product"
-        initialData={product}
+        initialData={{
+          title: product.title,
+          description: product.description,
+          content: product.content,
+          tags: product.tags ?? "",
+          imageUrl: product.imageUrl,
+          category: product.category,
+          brand: product.brand,
+          price: product.price,
+          stock: product.stock,
+          rating: product.rating,
+          featured: product.featured,
+          active: product.active,
+        }}
       />
     </main>
   );

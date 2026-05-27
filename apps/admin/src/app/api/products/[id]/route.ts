@@ -50,7 +50,7 @@ export async function POST(
 }
 */
 import { NextRequest, NextResponse } from "next/server";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export async function POST(
   request: NextRequest,
@@ -103,44 +103,44 @@ export async function POST(
     );
   }
 
-  // Find product with matching id
-  const index = products.findIndex(
-    (product) => product.id === productId
-  );
+  try {
+    // Update product with new data
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        title,
+        description,
+        content,
+        tags: tags || "",
+        imageUrl,
+        category,
+        brand,
 
-  if (index === -1) {
+        // Converts types safely
+        price: Number(price ?? 0),
+        stock: Number(stock ?? 0),
+        rating: Number(rating ?? 0),
+
+        featured: Boolean(featured),
+        active: Boolean(active),
+      },
+    });
+
+    return NextResponse.json(updatedProduct);
+  } catch (error: any) {
+    // Prisma record not found error
+    if (error.code === "P2025") {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    console.error(error);
+
     return NextResponse.json(
-      { error: "Product not found" },
-      { status: 404 }
+      { error: "Server error" },
+      { status: 500 }
     );
   }
-
-  // Retrieves the current product, ! = product is not undefined 
-  const existingProduct = products[index]!;
-
-  // Update product - Replaces the old product with updated data
-  products[index] = {
-    // Keeps unchanged fields:
-    id: existingProduct.id,
-    urlId: existingProduct.urlId,
-    date: existingProduct.date,
-
-    title,
-    description,
-    content,
-    tags: tags || "",
-    imageUrl,
-    category,
-    brand,
-
-    // Converts types safely
-    price: Number(price ?? 0),
-    stock: Number(stock ?? 0),
-    rating: Number(rating ?? 0), 
-
-    featured: Boolean(featured),
-    active: Boolean(active),
-  };
-
-  return NextResponse.json(products[index]);
 }

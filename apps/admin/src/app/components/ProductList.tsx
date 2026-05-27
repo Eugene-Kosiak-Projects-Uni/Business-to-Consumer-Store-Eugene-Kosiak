@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-//import { Post } from "@prisma/client";
-import type { Product } from "@repo/db/data";
+import { Product } from "@prisma/client";
 import Link from "next/link";
 
 
