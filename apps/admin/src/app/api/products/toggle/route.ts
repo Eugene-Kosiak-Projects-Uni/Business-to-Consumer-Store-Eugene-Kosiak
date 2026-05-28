@@ -11,17 +11,18 @@ export async function POST(req: Request) {
   });
 
   if (!product) {
-    return new NextResponse(
-      "Product not found",
-      { status: 404 }
-    );
+    return new Response("Product not found", { status: 404 }); // 404 - not found
   }
 
-  // Toggle active status
-  product.active = !product.active;
+  const updated = await prisma.product.update({
+    where: { id: Number(id) },
+    data: { // update product with active status
+      active: !product.active,
+    },
+  });
 
   // Return updated product
-  return NextResponse.json(product);
+  return NextResponse.json(updated);
 }
 
 /* - Post prisma data
