@@ -53,23 +53,6 @@ export async function seed() {
     });
   }
 
-  // Seed purchases for tests
-  await client.purchase.create({
-    data: {
-      userId: user.id,
-      total: 149,
-      items: {
-        create: [
-          {
-            productId: 2,
-            title: "RGB Gaming Keyboard",
-            price: 149,
-            quantity: 1,
-          },
-        ],
-      },
-    },
-  });
 
   console.log("✅ Seeding complete");
 }
