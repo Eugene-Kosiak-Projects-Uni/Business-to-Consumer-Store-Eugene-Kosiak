@@ -22,6 +22,7 @@ export async function seed() {
 
   const user = await client.user.create({
     data: {
+      id: 1,
       email: "user@test.com",
       password:
         "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
