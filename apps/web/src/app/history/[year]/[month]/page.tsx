@@ -1,5 +1,5 @@
 import { Main } from "@/components/Main";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export default async function Page({
   params,
@@ -13,14 +13,17 @@ export default async function Page({
   const end = new Date(Number(year), Number(month), 1);
 
   // Filter active products and filter them by date
-  const filteredProducts = products
-    .filter((p) => p.active)
-    .filter((p) => {
-      const d = new Date(p.date);
-      return d >= start && d < end;
-    });
+  const filteredProducts = await prisma.product.findMany({
+    where: {
+      active: true,
+      date: {
+        gte: start,
+        lt: end,
+      },
+    },
+  });
 
-  // Format month from num to string 
+  // Format month from num to string
   const monthName = new Date(
     Number(year),
     Number(month) - 1
