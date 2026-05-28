@@ -12,17 +12,15 @@ const client = new PrismaClient();
 export async function seed() {
   console.log("🌱 Seeding data...");
 
-  // Clear existing data
+  // Delete child tables first
   await client.purchaseItem.deleteMany();
   await client.purchase.deleteMany();
 
-  // Delete users BEFORE re-creating them
+  // Then parents
+  await client.product.deleteMany();
   await client.user.deleteMany();
 
-  await client.product.deleteMany();
-
-  // Create default test user
-  await client.user.create({
+  const user = await client.user.create({
     data: {
       email: "user@test.com",
       password:
@@ -31,10 +29,11 @@ export async function seed() {
     },
   });
 
-  // Insert products
+  // Create products with FIXED IDs
   for (const product of products) {
     await client.product.create({
       data: {
+        id: product.id,
         title: product.title,
         content: product.content,
         category: product.category,
@@ -52,6 +51,24 @@ export async function seed() {
       },
     });
   }
+
+  // Seed purchases for tests
+  await client.purchase.create({
+    data: {
+      userId: user.id,
+      total: 149,
+      items: {
+        create: [
+          {
+            productId: 2,
+            title: "RGB Gaming Keyboard",
+            price: 149,
+            quantity: 1,
+          },
+        ],
+      },
+    },
+  });
 
   console.log("✅ Seeding complete");
 }
