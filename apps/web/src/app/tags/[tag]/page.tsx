@@ -1,6 +1,6 @@
 import { Main } from "@/components/Main";
 import { toUrlPath } from "@repo/utils/url";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 export default async function Page({
   params,
@@ -9,25 +9,23 @@ export default async function Page({
 }) {
   const { tag } = await params;
 
-  const products = await prisma.product.findMany({
-    where: { active: true },
-  });
-
-  const filteredProducts = products.filter((p) =>
-    p.tags
-      .split(",")
-      .map((t) => toUrlPath(t.trim()))
-      .includes(tag)
+  const filteredProducts = products.filter(
+    (p) =>
+      p.active &&
+      p.tags
+        .split(",")
+        .map((t) => toUrlPath(t.trim()))
+        .includes(tag)
   );
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">#{tag}</h1>
-
+      
       {filteredProducts.length === 0 ? (
         <p>0 Products</p>
       ) : (
-        <Main products={filteredProducts} />
+      <Main products={filteredProducts} />
       )}
     </div>
   );

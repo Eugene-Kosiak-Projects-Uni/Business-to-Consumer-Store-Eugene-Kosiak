@@ -1,10 +1,12 @@
 import { Main } from "@/components/Main";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 export default async function HomePage() {
-  const activeProducts = await prisma.product.findMany({
-    where: { active: true },
-  });
+  const activeProducts = products.filter(
+    (p) => p.active
+  );
 
-  return <Main products={activeProducts} />;
+  return (
+    <Main products={activeProducts} />
+  );
 }

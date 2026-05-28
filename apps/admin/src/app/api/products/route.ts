@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 
 // slug function - to type title of product in URL link rather than by number
 function generateUrlId(title: string) {
@@ -44,9 +44,12 @@ export async function POST(req: Request) {
   }
 
   // Create new product
-  const created = await prisma.product.create({
-  data: {
+  const newProduct = {
+    id: products.length + 1,
+
+    // URL ID from title (e.g. "My First Post" → "my-first-post")
     urlId: generateUrlId(title),
+
     title,
     description,
     content,
@@ -54,15 +57,21 @@ export async function POST(req: Request) {
     imageUrl,
     category,
     brand,
+    date: new Date(),
+
     price: Number(price ?? 0),
     stock: Number(stock ?? 0),
     rating: Number(rating ?? 0),
+
     featured: Boolean(featured),
     active: Boolean(active),
-  },
-});
+  };
 
-  return NextResponse.json(created, { status: 200 });
+  // add product to mock data array
+  products.push(newProduct);
+
+  // return successful response
+  return NextResponse.json(newProduct, { status: 200 });
 }
 
 /* - Original Create post API route with prisma

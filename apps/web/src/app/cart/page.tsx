@@ -115,7 +115,7 @@ export default function CartPage() {
                       // Display Message of max quantity of item reached based on current stock
                       onClick={() => {
                         requestAnimationFrame(() => {
-                          const nextQty = item.quantity - 1;
+                          const nextQty = item.quantity + 1;
                           const reachedMax = updateQuantity(item.id, nextQty);
 
                           if (reachedMax) {

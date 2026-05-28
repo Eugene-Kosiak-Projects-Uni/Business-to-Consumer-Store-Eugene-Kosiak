@@ -1,4 +1,4 @@
-import type { Product } from "@prisma/client";
+import type { Product } from "@repo/db/data";
 import Link from "next/link";
 
 export function Main({

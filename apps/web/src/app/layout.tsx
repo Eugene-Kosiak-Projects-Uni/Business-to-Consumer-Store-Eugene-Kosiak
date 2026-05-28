@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import "./globals.css";
 import { TagList } from "@/components/Menu/TagList";
 import { CategoryList } from "@/components/Menu/CategoryList";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeProvider } from "@/components/Themes/ThemeContext";
@@ -52,9 +52,7 @@ export default async function RootLayout({
     loggedIn = false;
   }
 
-  const activeProducts = await prisma.product.findMany({
-    where: { active: true },
-  });
+  const activeProducts = products.filter((p) => p.active);
 
   return (
     <html lang="en" data-theme={theme}>

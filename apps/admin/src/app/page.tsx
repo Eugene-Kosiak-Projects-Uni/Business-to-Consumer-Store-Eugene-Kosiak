@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
-import { prisma } from "@repo/db/prisma";
+import { products } from "@repo/db/data";
 import ProductList from "./components/ProductList";
 
 export default async function Home() {
@@ -62,11 +62,5 @@ export default async function Home() {
   }
 
   // 5. Shows admin content if valid
-  const products = await prisma.product.findMany({
-    orderBy: {
-      date: "desc",
-    },
-  });
-
   return <ProductList products={products} />;
 }
