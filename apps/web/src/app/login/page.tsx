@@ -34,6 +34,14 @@ export default async function LoginPage() {
             </h1>
 
             <form action="/api/auth" method="POST" className="space-y-4">
+
+            <input
+                name="email"
+                type="email"
+                placeholder="Enter email"
+                className="w-full px-3 py-2 border rounded text-black"
+            />
+            
             <input
                 name="password"
                 type="password"

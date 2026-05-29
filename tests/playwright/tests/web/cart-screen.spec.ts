@@ -4,6 +4,10 @@ async function login(page: any) {
   await page.goto("/login");
 
   await page
+    .getByPlaceholder("Enter email")
+    .fill("user@test.com");
+
+  await page
     .getByPlaceholder("Enter password")
     .fill("user123");
 

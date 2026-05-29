@@ -20,6 +20,7 @@ export async function seed() {
   await client.product.deleteMany();
   await client.user.deleteMany();
 
+  /*
   const user = await client.user.create({
     data: {
       id: 1,
@@ -28,6 +29,24 @@ export async function seed() {
         "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
       role: "CUSTOMER",
     },
+  });
+  */
+  // create multiple users
+  await client.user.createMany({
+    data: [
+      {
+        id: 1,
+        email: "user@test.com",
+        password: "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
+        role: "CUSTOMER",
+      },
+      {
+        id: 2,
+        email: "admin@test.com",
+        password: "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO",
+        role: "ADMIN",
+      },
+    ],
   });
 
   // Create products with FIXED IDs
