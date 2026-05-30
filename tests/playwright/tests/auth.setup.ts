@@ -43,9 +43,9 @@ setup(
     const apiContext = await playwright.request.newContext();
 
     await apiContext.post("/api/auth", {
-      data: JSON.stringify({ password: "admin123" }),
-      headers: {
-        "Content-Type": "application/json",
+      form: {
+        email: "admin@test.com",
+        password: "admin123",
       },
     });
 

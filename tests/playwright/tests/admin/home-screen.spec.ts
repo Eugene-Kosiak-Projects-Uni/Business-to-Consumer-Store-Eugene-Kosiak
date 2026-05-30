@@ -29,6 +29,7 @@ test.describe("ADMIN HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      await page.getByLabel("Email", { exact: true }).fill("admin@test.com");
       await page.getByLabel("Password", { exact: true }).fill("admin123");
       await page.getByText("Sign In", { exact: true }).click();
 

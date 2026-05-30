@@ -40,6 +40,20 @@ export default async function Home() {
           </p>
 
           <form action="/api/auth" method="POST" className="space-y-4">
+
+            <div className="flex flex-col">
+              <label htmlFor="email" className="mb-1 font-medium">
+                Email
+              </label>
+
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className="admin-input"
+              />
+            </div>
+            
             <div className="flex flex-col">
               <label htmlFor="password" className="mb-1 font-medium">
                 Password
