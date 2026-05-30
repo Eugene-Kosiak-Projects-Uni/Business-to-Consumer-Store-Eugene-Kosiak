@@ -36,12 +36,14 @@ export async function seed() {
     data: [
       {
         id: 1,
+        name: "John Doe",
         email: "user@test.com",
         password: "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
         role: "CUSTOMER",
       },
       {
         id: 2,
+        name: "Admin Mark",
         email: "admin@test.com",
         password: "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO",
         role: "ADMIN",
