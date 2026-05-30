@@ -5,14 +5,18 @@ import { prisma } from "@repo/db/prisma";
 export async function POST(req: Request) {
   const formData = await req.formData();
 
+  const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
   // Validate fields
-  if (!email || !password) {
-    return new Response("Email and password are required", {
-      status: 400,
-    });
+  if (!name || !email || !password) {
+    return new Response(
+      "Name, email and password are required",
+      {
+        status: 400,
+      }
+    );
   }
 
   // Check if user already exists
@@ -34,6 +38,7 @@ export async function POST(req: Request) {
   // Create user
   await prisma.user.create({
     data: {
+      name,
       email,
       password: hashedPassword,
       role: "CUSTOMER",
