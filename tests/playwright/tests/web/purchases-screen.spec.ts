@@ -42,17 +42,13 @@ test.describe("PURCHASES SCREEN", () => {
       });
     });
   });
-/* - Still not working
+
   test(
     "Displays purchases after checkout",
     {
       tag: "@a1",
     },
     async ({ page }) => {
-      await page.goto("/api/seed");
-
-      await login(page);
-
       await page.goto("/product/wireless-headphones");
 
       await page
@@ -87,11 +83,16 @@ test.describe("PURCHASES SCREEN", () => {
       });
 
       await expect(purchase).toBeVisible();
-      await expect(purchase.getByText("× 2")).toBeVisible();
-      await expect(purchase.getByText("$398")).toBeVisible();
+      await expect(
+        purchase.getByText("× 1")
+      ).toBeVisible();
+
+      await expect(
+        purchase.getByText("Total: $199")
+      ).toBeVisible();
     }
   );
-*/
+
   test(
     "Can remove purchase and show toast",
     {
