@@ -115,7 +115,7 @@ export async function POST(req: Request) {
       role: "ADMIN", // Admin role
     },
     SECRET, // Secret used to sign token
-    { expiresIn: "15m" } // token expiration - 3 min to 15 min is good for security
+    { expiresIn: "3m" } // token expiration - 3 min to 15 min is good for security
   );
 
   // Redirect to post list after successful login

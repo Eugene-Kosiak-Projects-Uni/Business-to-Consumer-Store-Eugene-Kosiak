@@ -20,7 +20,7 @@ test.describe("ADMIN HOME SCREEN", () => {
       ).toBeVisible();
     },
   );
-
+/*
   test(
     "Can login",
     {
@@ -56,7 +56,52 @@ test.describe("ADMIN HOME SCREEN", () => {
       await expect(page.locator("article")).toHaveCount(0);
     },
   );
+*/
 
+  test(
+    "Can login",
+    {
+      tag: "@a2",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+
+      // fill login form
+      await page.getByLabel("Email", { exact: true }).fill("admin@test.com");
+      await page.getByLabel("Password", { exact: true }).fill("admin123");
+
+      // IMPORTANT: wait for login + navigation together (like your working version)
+      await Promise.all([
+        page.waitForURL("/"),
+        page.getByText("Sign In", { exact: true }).click(),
+      ]);
+
+      // ensure dashboard is loaded
+      await expect(page.getByText("Admin of Products")).toBeVisible();
+
+      // cookie exists (same as post test)
+      const cookies = await page.context().cookies();
+      const passwordCookie = cookies.find(
+        (cookie) => cookie.name === "auth_token",
+      );
+      expect(passwordCookie).toBeDefined();
+
+      // logout
+      await Promise.all([
+        page.waitForResponse((res) =>
+          res.url().includes("/api/auth") &&
+          res.request().method() === "DELETE"
+        ),
+        page.getByText("Logout").click(),
+      ]);
+
+      // back to login UI
+      await expect(page.getByText("Sign in to your account")).toBeVisible();
+
+      // no products visible
+      await expect(page.locator("article")).toHaveCount(0);
+    },
+  );
   test(
     "Shows home screen to authorised user",
     {
