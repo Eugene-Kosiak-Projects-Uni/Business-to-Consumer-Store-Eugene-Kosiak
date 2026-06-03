@@ -1,5 +1,4 @@
 import { CategoryList } from "./CategoryList";
-import { HistoryList } from "./HistoryList";
 import { TagList } from "./TagList";
 import { prisma } from "@repo/db/prisma";
 
@@ -13,14 +12,6 @@ export async function LeftMenu() {
         <ul className="flex flex-col gap-y-7">
           <li>
             <CategoryList products={products} />
-          </li>
-
-          <li>
-            <HistoryList
-              selectedYear=""
-              selectedMonth=""
-              products={products}
-            />
           </li>
 
           <li>

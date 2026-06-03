@@ -131,43 +131,6 @@ export default async function RootLayout({
                     </ul>
                   </div>
 
-                  {/* HISTORY */}
-                  <div>
-                    <h2 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">History</h2>
-                    <ul className="space-y-2">
-                      {Array.from(
-                        activeProducts.reduce((acc, product) => {
-                          const d = new Date(product.date);
-                          const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
-                          acc.set(key, (acc.get(key) || 0) + 1);
-                          return acc;
-                        }, new Map<string, number>())
-                      ).map(([key, count]) => {
-                        const [year, month] = key.split("-");
-                        const date = new Date(Number(year), Number(month) - 1);
-
-                        const label = date.toLocaleString("en-GB", {
-                          month: "long",
-                        });
-
-                        return (
-                          <li key={key}>
-                            <Link
-                              href={`/history/${year}/${month}`}
-                              className="text-gray-700 dark:text-gray-200 hover:underline hover:text-black dark:hover:text-white"
-                            >
-                              {label} {year}
-                              <span className="ml-2 inline-flex items-center justify-center 
-                              min-w-[22px] h-[22px] px-2 rounded-full bg-gray-700 text-white 
-                              text-xs font-semibold">
-                                {count}</span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-
                   {/* TAGS */}
                   <TagList products={activeProducts} />
                 </nav>
