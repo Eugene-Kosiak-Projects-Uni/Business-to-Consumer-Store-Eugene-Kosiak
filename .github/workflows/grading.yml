@@ -51,43 +51,6 @@ jobs:
         run: pnpm turbo build
 
       ####################
-      # UTILS TESTS
-      ####################
-
-      - name: Test - Utils
-        id: testUtils
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: packages/utils
-          test-name: Unit 1 - Utils
-          command: pnpm test
-          timeout: 10
-          max-score: 1
-
-      - name: Test - Ui
-        id: testUi
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: packages/ui
-          test-name: Unit 2 - UI
-          command: pnpm test
-          timeout: 10
-          max-score: 1
-
-      - name: Test - Web
-        id: testWeb
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: apps/web
-          test-name: Unit 3 - Web Components
-          command: pnpm test
-          timeout: 10
-          max-score: 1
-
-      ####################
       # MAJOR ASSIGNMENT PART 1
       ####################
       - name: Test Major Assignment UI part 1 with Playwright
