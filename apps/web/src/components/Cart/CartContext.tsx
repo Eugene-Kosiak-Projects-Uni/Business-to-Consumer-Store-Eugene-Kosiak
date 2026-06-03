@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { Product } from "@prisma/client";
 
-
 type CartItem = Product & { quantity: number };
 
 type CartContextType = {
@@ -19,17 +18,64 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   // Store cart state
   const [cart, setCart] = useState<CartItem[]>([]);
+  // Store current user
+  const [userId, setUserId] = useState<number | null>(null);
 
-  // Load from localStorage
+  // Load current logged-in user
   useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    if (stored) setCart(JSON.parse(stored));
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+
+        if (data.loggedIn) {
+          setUserId(data.user.id);
+        } else {
+          setUserId(null);
+          setCart([]); // reset cart if not logged in
+        }
+      } catch {
+        setUserId(null);
+        setCart([]);
+      }
+    }
+
+    fetchUser();
   }, []); // runs once - when the page loads
 
-  // Saves updated cart
+  // Load from localStorage (per user)
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]); // runs when cart changes
+    if (userId === null) return;
+
+    const stored = localStorage.getItem(`cart_${userId}`);
+    if (stored) {
+      setCart(JSON.parse(stored));
+    } else {
+      setCart([]); // new user = empty cart
+    }
+  }, [userId]);
+
+  // Saves updated cart (per user)
+  useEffect(() => {
+    if (userId === null) return;
+
+    localStorage.setItem(`cart_${userId}`, JSON.stringify(cart));
+  }, [cart, userId]); // runs when cart changes
+
+  useEffect(() => {
+    function syncCart() {
+      if (userId === null) return;
+
+      const stored = localStorage.getItem(`cart_${userId}`);
+      setCart(stored ? JSON.parse(stored) : []);
+    }
+
+    window.addEventListener("focus", syncCart);
+
+    return () => {
+      window.removeEventListener("focus", syncCart);
+    };
+  }, [userId]);
 
   function addToCart(product: Product) {
     setCart((prev) => {
@@ -57,33 +103,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   function updateQuantity(id: number, quantity: number): boolean {
-      const item = cart.find((p) => p.id === id); // find item
+    const item = cart.find((p) => p.id === id); // find item
 
-      if (!item) return false; // do nothing
+    if (!item) return false; // do nothing
 
-      const max = item.stock; // max quantity of a product
+    const max = item.stock; // max quantity of a product
 
-      const reachedMax = quantity > max; // check if user exceeds stock
+    const reachedMax = quantity > max; // check if user exceeds stock
 
-      setCart((prev) =>
-        prev.map((p) => {
-          if (p.id !== id) return p;
-          /*
-            If too high → cap at max
-            Else → allow value
-            Never go below 1
-          */
-          return {
-            ...p,
-            quantity: reachedMax
-              ? max
-              : Math.max(1, quantity),
-          };
-        })
-      );
+    setCart((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+        /*
+          If too high → cap at max
+          Else → allow value
+          Never go below 1
+        */
+        return {
+          ...p,
+          quantity: reachedMax
+            ? max
+            : Math.max(1, quantity),
+        };
+      })
+    );
 
-      return reachedMax;
-    }
+    return reachedMax;
+  }
 
   return (
     <CartContext.Provider

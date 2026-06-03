@@ -4,13 +4,12 @@ import { useCart } from "@/components/Cart/CartContext";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function CartPage() {
   const router = useRouter();
   // Store cart data and actions
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
-  // Store state if checkout is complete
-  const [checkedOut, setCheckedOut] = useState(false);
   // Store max quantity message
   const [message, setMessage] = useState("");
   // Store if the user is logged in
@@ -40,16 +39,43 @@ export default function CartPage() {
   }, [router]); // runs once when the page is loaded
 
   async function handleCheckout() {
-    // Send cart to backend
-    const res = await fetch("/api/purchase", {
-      method: "POST",
-      body: JSON.stringify({ cart }),
-    });
+    try {
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+      );
 
-    // Success full checkout
-    if (res.ok) {
-      setCheckedOut(true);
-      clearCart();
+      if (!stripe) {
+        console.error("Stripe failed to load");
+        return;
+      }
+
+      const body = {
+        products: cart,
+      };
+
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      const session = await res.json();
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Checkout Error:", error);
     }
   }
 
@@ -60,16 +86,6 @@ export default function CartPage() {
 
   if (checkingAuth) {
     return <p className="p-10">Checking login...</p>;
-  }
-
-  if (checkedOut) {
-    return (
-      <div className="p-10 text-center">
-        <h1 className="text-2xl font-bold">Payment Successful 🎉</h1>
-        <p>Mock checkout complete.</p>
-        <Link href="/">Back to store</Link>
-      </div>
-    );
   }
 
   return (
@@ -112,18 +128,24 @@ export default function CartPage() {
                   {/* QUANTITY CONTROLS */}
                   <div className="flex items-center gap-2 mt-2">
                     <button
-                      // Display Message of max quantity of item reached based on current stock
                       onClick={() => {
                         requestAnimationFrame(() => {
                           const nextQty = item.quantity + 1;
                           const reachedMax = updateQuantity(item.id, nextQty);
 
                           if (reachedMax) {
-                            setMessage(`Max quantity of "${item.title}" has been reached`);
+                            setMessage(
+                              `Max quantity of "${item.title}" has been reached`
+                            );
 
-                            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                            if (timeoutRef.current) {
+                              clearTimeout(timeoutRef.current);
+                            }
 
-                            timeoutRef.current = setTimeout(() => setMessage(""), 3000);
+                            timeoutRef.current = setTimeout(
+                              () => setMessage(""),
+                              3000
+                            );
                           }
                         });
                       }}
