@@ -130,7 +130,7 @@ export default function CartPage() {
                     <button
                       onClick={() => {
                         requestAnimationFrame(() => {
-                          const nextQty = item.quantity + 1;
+                          const nextQty = item.quantity - 1;
                           const reachedMax = updateQuantity(item.id, nextQty);
 
                           if (reachedMax) {

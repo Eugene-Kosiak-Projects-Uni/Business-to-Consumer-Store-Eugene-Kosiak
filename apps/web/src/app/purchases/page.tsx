@@ -149,8 +149,8 @@ export default function PurchasesPage() {
             </button>
 
             <ul className="ml-4 list-disc mt-2">
-              {p.items.map((item) => (
-                <li key={item.productId}>
+              {p.items.map((item, index) => (
+                <li key={`${item.productId}-${index}`}>
                   {item.title} × {item.quantity} (${item.price})
                 </li>
               ))}
