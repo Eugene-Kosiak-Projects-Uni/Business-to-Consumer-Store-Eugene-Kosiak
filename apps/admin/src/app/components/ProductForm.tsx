@@ -161,7 +161,11 @@ export default function ProductForm({
 
     if (res.ok) {
       setErrors([]);
-      setSuccess("Product updated successfully");
+      if (initialData) {
+        setSuccess("Product updated successfully");
+      } else {
+        setSuccess("Product created successfully");
+      }
     } else {
       setSuccess("");
       setErrors(["Failed to create product"]);

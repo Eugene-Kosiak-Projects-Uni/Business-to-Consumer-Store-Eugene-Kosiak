@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export async function POST(req: Request) {
   // Get id from request body (JSON data sent from frontend to backend)
   const { id } = await req.json();
 
   // Find product with matching id
-  const product = products.find(
-    (product) => product.id === Number(id)
-  );
+  const product = await prisma.product.findUnique({
+    where: { id: Number(id) },
+  });
 
   if (!product) {
-    return new NextResponse(
-      "Product not found",
-      { status: 404 }
-    );
+    return new Response("Product not found", { status: 404 }); // 404 - not found
   }
 
-  // Toggle active status
-  product.active = !product.active;
+  const updated = await prisma.product.update({
+    where: { id: Number(id) },
+    data: { // update product with active status
+      active: !product.active,
+    },
+  });
 
   // Return updated product
-  return NextResponse.json(product);
+  return NextResponse.json(updated);
 }
 
 /* - Post prisma data

@@ -1,6 +1,6 @@
 import { toUrlPath } from "@repo/utils/url";
 import { SummaryItem } from "./SummaryItem";
-import type { Product } from "@repo/db/data";
+import type { Product } from "@prisma/client";
 
 export function CategoryList({ products }: { products: Product[] }) {
   const categories = [...new Set(products.map((p) => p.category))];

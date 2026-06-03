@@ -2,6 +2,12 @@ import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
 test.describe("DETAIL SCREEN", () => {
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/api/seed");
+  });
+
+  
   test(
     "Product Detail View",
     {
@@ -10,13 +16,26 @@ test.describe("DETAIL SCREEN", () => {
     async ({ page }) => {
       await page.goto("/product/wireless-headphones");
 
-      await expect(page.getByText("Wireless Headphones")).toBeVisible();
+      await expect(
+        page.getByRole("heading", {
+          name: "Wireless Headphones",
+        })
+      ).toBeVisible();
 
-      await expect(page.getByText(/wireless headphones/i)).toBeVisible(); // description check
+      // description paragraph specifically
+      await expect(
+        page.locator("p").filter({
+          hasText: /Experience premium sound quality/i,
+        })
+      ).toBeVisible();
 
       await expect(page.getByText("$199 AUD")).toBeVisible();
 
-      await expect(page.getByRole("button", { name: /add to cart/i })).toBeVisible();
+      await expect(
+        page.getByRole("button", {
+          name: /add to cart/i,
+        })
+      ).toBeVisible();
     },
   );
 
@@ -42,6 +61,10 @@ test.describe("DETAIL SCREEN", () => {
     },
     async ({ page }) => {
       await page.goto("/login");
+
+      await page
+        .getByPlaceholder("Enter email")
+        .fill("user@test.com");
 
       await page
         .getByPlaceholder("Enter password")

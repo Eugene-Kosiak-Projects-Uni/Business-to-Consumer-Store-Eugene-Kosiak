@@ -1,10 +1,17 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 import ProductList from "./components/ProductList";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+  const error = params.error;
+
   /* 1. Checks for JWT token
     get all cookies, specifically look for auth token cookie safely without throwing error if it doesn't exist
   */
@@ -30,7 +37,7 @@ export default async function Home() {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-          
+
           <h1 className="admin-title text-3xl mb-2 text-center">
             Admin Login
           </h1>
@@ -39,7 +46,27 @@ export default async function Home() {
             Sign in to your account
           </p>
 
+          {error === "invalid" && (
+            <div className="mb-4 p-3 rounded bg-red-100 text-red-700 border border-red-300">
+              ADMIN ACCESS ONLY: Invalid email or password.
+            </div>
+          )}
+
           <form action="/api/auth" method="POST" className="space-y-4">
+
+            <div className="flex flex-col">
+              <label htmlFor="email" className="mb-1 font-medium">
+                Email
+              </label>
+
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className="admin-input"
+              />
+            </div>
+            
             <div className="flex flex-col">
               <label htmlFor="password" className="mb-1 font-medium">
                 Password
@@ -61,6 +88,13 @@ export default async function Home() {
     );
   }
 
-  // 5. Shows admin content if valid
+  // 5. Fetch products from Prisma
+  const products = await prisma.product.findMany({
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  // 6. Shows admin content if valid
   return <ProductList products={products} />;
 }

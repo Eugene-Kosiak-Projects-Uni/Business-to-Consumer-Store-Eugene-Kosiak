@@ -194,6 +194,51 @@ test.describe("ADMIN LIST SCREEN", () => {
       await expect(userPage).toHaveURL("/products/create");
     },
   );
+
+  test(
+    "Can delete a product",
+    {
+      tag: "@a3",
+    },
+    async ({ userPage }) => {
+      await seed();
+      await userPage.goto("/");
+
+      // initial state
+      await expect(userPage.locator("article")).toHaveCount(4);
+
+      // pick first product title for verification
+      const firstArticle = userPage.locator("article").first();
+      const productName = await firstArticle
+        .locator("h2")
+        .innerText();
+
+      // click delete button
+      await firstArticle
+        .getByTestId(/delete-/)
+        .click();
+
+      // modal should appear
+      await expect(
+        userPage.getByText("Delete Product")
+      ).toBeVisible();
+
+      await expect(
+        userPage.getByText("Are you sure you want to delete this product?")
+      ).toBeVisible();
+
+      // confirm delete
+      await userPage.getByRole("button", { name: "Yes, Delete" }).click();
+
+      // product removed
+      await expect(userPage.locator("article")).toHaveCount(3);
+
+      // deleted product no longer visible
+      await expect(
+        userPage.getByText(productName)
+      ).not.toBeVisible();
+    },
+  );
 });
 
 

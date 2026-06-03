@@ -1,92 +1,116 @@
 import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
+async function login(page: any) {
+  await page.goto("/login");
+
+  await page.getByPlaceholder("Enter email").fill("user@test.com");
+  await page.getByPlaceholder("Enter password").fill("user123");
+
+  await page.getByRole("button", { name: /login/i }).click();
+
+  await page.waitForURL("/");
+}
+
 test.beforeAll(async () => {
   await seed();
 });
 
 test.describe("PURCHASES SCREEN", () => {
 
-  test.beforeEach(async ({ request }) => {
-    await request.delete("/api/purchase?reset=true");
+  test.beforeEach(async ({ page }) => {
+    await page.context().clearCookies();
+
+    await page.goto("/api/seed");
+
+    await login(page);
+
+    await page.evaluate(async () => {
+      await fetch("/api/purchase?reset=true", {
+        method: "DELETE",
+      });
+    });
   });
 
-  /* - Still need to fix
   test(
     "Displays purchases after checkout",
-    {
-      tag: "@a1",
+    { 
+      tag: "@a1" 
     },
-    async ({ page, request }) => {
-      await request.post("/api/purchase", {
+    async ({ page }) => {
+      await page.goto("/product/wireless-headphones");
+      await page.getByRole("button", { name: /add to cart/i }).click();
+
+      // ✅ Create purchase correctly
+      await page.request.post("/api/purchase", {
         data: {
           cart: [
-            { id: 1, title: "Wireless Headphones", price: 199, quantity: 2 },
+            {
+              id: 1,
+              title: "Wireless Headphones",
+              price: 100,
+              quantity: 1,
+            },
           ],
         },
       });
 
       await page.goto("/purchases");
 
-      const purchase = page.locator("div.border", {
-        hasText: "Wireless Headphones",
-      });
+      await expect(page.getByTestId("purchase-item")).toHaveCount(1);
 
-      await expect(purchase).toBeVisible();
-      await expect(purchase.getByText("× 2")).toBeVisible();
-      await expect(purchase.getByText("$398")).toBeVisible();
-    },
+      await expect(page.getByText(/wireless headphones/i)).toBeVisible();
+    }
   );
-  */
 
   test(
     "Can remove purchase and show toast",
-    {
-      tag: "@a1",
+    { 
+      tag: "@a1" 
     },
-    async ({ page, request }) => {
-      await request.post("/api/purchase", {
+    async ({ page }) => {
+      await page.goto("/product/wireless-headphones");
+
+      await page.getByRole("button", { name: /add to cart/i }).click();
+
+      await page.request.post("/api/purchase", {
         data: {
           cart: [
-            { id: 2, title: "Gaming Keyboard", price: 149, quantity: 1 },
+            {
+              id: 1,
+              title: "Wireless Headphones",
+              price: 100,
+              quantity: 1,
+            },
           ],
-        },
+        }
       });
 
       await page.goto("/purchases");
 
-      const purchase = page.locator("div.border", {
-        hasText: "Gaming Keyboard",
-      });
+      await expect(page.getByTestId("purchase-item").first()).toBeVisible();
 
-      await purchase.getByRole("button", { name: "Remove" }).click();
+      await page.getByRole("button", { name: "Remove" }).click();
 
-      await expect(purchase).not.toBeVisible();
+      await expect(page.getByTestId("purchase-item")).toHaveCount(0);
 
       await expect(
-        page.getByText("Purchase removed successfully"),
+        page.getByText("Purchase removed successfully")
       ).toBeVisible();
-    },
+    }
   );
 
   test(
     "Shows error toast when API fails",
-    {
-      tag: "@a1",
+    { 
+      tag: "@a1" 
     },
-    async ({ page, request }) => {
-      await request.post("/api/purchase", {
-        data: {
-          cart: [
-            { id: 3, title: "Mouse", price: 50, quantity: 1 },
-          ],
-        },
-      });
-
+    async ({ page }) => {
       await page.route("**/api/purchase*", async (route) => {
         if (route.request().method() === "DELETE") {
           await route.fulfill({
             status: 404,
+            contentType: "application/json",
             body: JSON.stringify({ error: "Purchase not found" }),
           });
         } else {
@@ -94,14 +118,30 @@ test.describe("PURCHASES SCREEN", () => {
         }
       });
 
+      await page.goto("/product/wireless-headphones");
+
+      await page.getByRole("button", { name: /add to cart/i }).click();
+
+      await page.request.post("/api/purchase", {
+        data: {
+          cart: [
+            {
+              id: 1,
+              title: "Wireless Headphones",
+              price: 100,
+              quantity: 1,
+            },
+          ],
+        }
+      });
+
       await page.goto("/purchases");
 
-      const purchase = page.locator("div.border").first();
-      await purchase.getByRole("button", { name: "Remove" }).click();
+      await expect(page.getByTestId("purchase-item").first()).toBeVisible();
 
-      await expect(
-        page.getByText("Failed to remove purchase"),
-      ).toBeVisible();
-    },
+      await page.getByRole("button", { name: "Remove" }).click();
+
+      await expect(page.getByText("Failed to remove purchase")).toBeVisible();
+    }
   );
 });

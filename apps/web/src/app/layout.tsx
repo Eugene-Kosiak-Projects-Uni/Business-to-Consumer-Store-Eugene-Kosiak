@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import "./globals.css";
 import { TagList } from "@/components/Menu/TagList";
 import { CategoryList } from "@/components/Menu/CategoryList";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeProvider } from "@/components/Themes/ThemeContext";
@@ -42,17 +42,29 @@ export default async function RootLayout({
   const token = cookieStore.get("user_auth_token")?.value;
 
   let loggedIn = false;
+  let userName = "";
 
   try {
     if (token) {
-      jwt.verify(token, process.env.JWT_SECRET || "user-secret-key");
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "user-secret-key"
+      ) as {
+        name: string;
+      };
+
       loggedIn = true;
+      userName = decoded.name;
     }
   } catch {
     loggedIn = false;
   }
 
-  const activeProducts = products.filter((p) => p.active);
+  const activeProducts = await prisma.product.findMany({
+    where: {
+      active: true,
+    },
+  });
 
   return (
     <html lang="en" data-theme={theme}>
@@ -119,43 +131,6 @@ export default async function RootLayout({
                     </ul>
                   </div>
 
-                  {/* HISTORY */}
-                  <div>
-                    <h2 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">History</h2>
-                    <ul className="space-y-2">
-                      {Array.from(
-                        activeProducts.reduce((acc, product) => {
-                          const d = new Date(product.date);
-                          const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
-                          acc.set(key, (acc.get(key) || 0) + 1);
-                          return acc;
-                        }, new Map<string, number>())
-                      ).map(([key, count]) => {
-                        const [year, month] = key.split("-");
-                        const date = new Date(Number(year), Number(month) - 1);
-
-                        const label = date.toLocaleString("en-GB", {
-                          month: "long",
-                        });
-
-                        return (
-                          <li key={key}>
-                            <Link
-                              href={`/history/${year}/${month}`}
-                              className="text-gray-700 dark:text-gray-200 hover:underline hover:text-black dark:hover:text-white"
-                            >
-                              {label} {year}
-                              <span className="ml-2 inline-flex items-center justify-center 
-                              min-w-[22px] h-[22px] px-2 rounded-full bg-gray-700 text-white 
-                              text-xs font-semibold">
-                                {count}</span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-
                   {/* TAGS */}
                   <TagList products={activeProducts} />
                 </nav>
@@ -164,9 +139,16 @@ export default async function RootLayout({
               {/* MAIN AREA */}
               <div className="flex-1 flex flex-col">
 
-                <header className="flex justify-between p-4 border-b">
+                <header className="flex justify-between items-center p-4 border-b">
                   <SearchBox />
-                  <ThemeSwitch />
+                  <div className="flex items-center gap-4">
+                    {loggedIn && (
+                      <p className="font-semibold">
+                        Hi {userName}
+                      </p>
+                    )}
+                    <ThemeSwitch />
+                  </div>
                 </header>
 
                 <main className="p-6 overflow-y-auto">

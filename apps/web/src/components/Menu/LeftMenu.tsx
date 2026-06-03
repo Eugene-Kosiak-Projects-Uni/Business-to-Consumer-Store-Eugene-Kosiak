@@ -1,9 +1,9 @@
 import { CategoryList } from "./CategoryList";
-import { HistoryList } from "./HistoryList";
 import { TagList } from "./TagList";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export async function LeftMenu() {
+  const products = await prisma.product.findMany();
   return (
     <div>
       <div>Top Links and blog name</div>
@@ -12,14 +12,6 @@ export async function LeftMenu() {
         <ul className="flex flex-col gap-y-7">
           <li>
             <CategoryList products={products} />
-          </li>
-
-          <li>
-            <HistoryList
-              selectedYear=""
-              selectedMonth=""
-              products={products}
-            />
           </li>
 
           <li>

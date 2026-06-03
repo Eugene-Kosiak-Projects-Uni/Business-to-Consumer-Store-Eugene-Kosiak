@@ -43,7 +43,8 @@ export async function TagList({
   );
 }
 */
-import type { Product } from "@repo/db/data";
+
+import type { Product } from "@prisma/client";
 import { tags } from "../../functions/tags";
 import { LinkList } from "./LinkList";
 import Link from "next/link";

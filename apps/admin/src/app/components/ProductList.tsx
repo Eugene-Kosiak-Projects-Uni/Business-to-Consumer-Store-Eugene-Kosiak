@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-//import { Post } from "@prisma/client";
-import type { Product } from "@repo/db/data";
+import type { Product } from "@prisma/client";
 import Link from "next/link";
 
 
@@ -24,6 +23,11 @@ export default function ProductList({ products }: { products: Product[] }) {
   const [productState, setProductState] = useState(products);
   // Store status message
   const [statusMessage, setStatusMessage] = useState("");
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [selectedProductId, setSelectedProductId] =
+    useState<number | null>(null);
 
  let filtered = [...productState].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -121,6 +125,48 @@ export default function ProductList({ products }: { products: Product[] }) {
     }
   }
 
+  function deleteProduct(id: number) {
+    setSelectedProductId(id);
+    setShowDeleteModal(true);
+  }
+
+  async function confirmDelete() {
+    if (selectedProductId === null) {
+      return;
+    }
+
+    const response = await fetch(
+      `/api/products/${selectedProductId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      setStatusMessage("Failed to delete product");
+
+      setTimeout(() => setStatusMessage(""), 6000);
+
+      return;
+    }
+
+    setProductState((prev) =>
+      prev.filter((p) => p.id !== selectedProductId)
+    );
+
+    setStatusMessage("Product deleted successfully");
+
+    setTimeout(() => setStatusMessage(""), 6000);
+
+    setShowDeleteModal(false);
+    setSelectedProductId(null);
+  }
+
+  function cancelDelete() {
+    setShowDeleteModal(false);
+    setSelectedProductId(null);
+  }
+
   return (
     <main className="p-8 font-sans">
       <h1
@@ -150,6 +196,12 @@ export default function ProductList({ products }: { products: Product[] }) {
 
       <Link href="/products/create">
         <button className="admin-btn mb-6 text-xl">Create Product</button>
+      </Link>
+
+      <Link href="/purchases">
+        <button className="admin-btn mb-6 ml-4 text-xl">
+          View Purchases
+        </button>
       </Link>
 
       <div className="flex flex-wrap gap-4 mb-6">
@@ -255,18 +307,58 @@ export default function ProductList({ products }: { products: Product[] }) {
 
               <p>{p.category}</p>
 
-              <button
-                data-test-id={`toggle-${p.id}`}
-                className="admin-btn mt-2"
-                // toogle active status on click, passing the product ID to identify which product to update
-                onClick={() => toggleActive(p.id)}
-              >
-                {p.active ? "Active" : "Inactive"}
-              </button>
+              <div className="flex items-center gap-4 mt-3">
+                <button
+                  data-test-id={`toggle-${p.id}`}
+                  className="admin-btn"
+                  onClick={() => toggleActive(p.id)}
+                >
+                  {p.active ? "Active" : "Inactive"}
+                </button>
+
+                <button
+                  data-test-id={`delete-${p.id}`}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                  onClick={() => deleteProduct(p.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </article>
         ))}
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl w-[400px] text-center">
+            <h2 className="text-2xl font-bold mb-4 text-red-600">
+              Delete Product
+            </h2>
+
+            <p className="mb-6 text-gray-700">
+              Are you sure you want to delete this
+              product?
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition"
+              >
+                Yes, Delete
+              </button>
+
+              <button
+                onClick={cancelDelete}
+                className="bg-gray-300 text-black px-5 py-2 rounded-lg hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

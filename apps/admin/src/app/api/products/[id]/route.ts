@@ -49,8 +49,10 @@ export async function POST(
   }
 }
 */
+
+
 import { NextRequest, NextResponse } from "next/server";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 
 export async function POST(
   request: NextRequest,
@@ -60,7 +62,7 @@ export async function POST(
 
   const productId = Number(id);
 
-  // Parase request body - get raw text (JSON data) from frontend to create product object.
+  // Parse request body - get raw text (JSON data) from frontend to create product object.
   let body;
 
   try {
@@ -103,44 +105,80 @@ export async function POST(
     );
   }
 
-  // Find product with matching id
-  const index = products.findIndex(
-    (product) => product.id === productId
-  );
+  try {
+    // Update product with Prisma
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        title,
+        description,
+        content,
+        tags: tags || "",
+        imageUrl,
+        category,
+        brand,
 
-  if (index === -1) {
+        // Converts types safely
+        price: Number(price ?? 0),
+        stock: Number(stock ?? 0),
+        rating: Number(rating ?? 0),
+
+        featured: Boolean(featured),
+        active: Boolean(active),
+      },
+    });
+
+    return NextResponse.json(updatedProduct);
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    console.error(error);
+
     return NextResponse.json(
-      { error: "Product not found" },
-      { status: 404 }
+      { error: "Server error" },
+      { status: 500 }
     );
   }
+}
 
-  // Retrieves the current product, ! = product is not undefined 
-  const existingProduct = products[index]!;
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
 
-  // Update product - Replaces the old product with updated data
-  products[index] = {
-    // Keeps unchanged fields:
-    id: existingProduct.id,
-    urlId: existingProduct.urlId,
-    date: existingProduct.date,
+  const productId = Number(id);
 
-    title,
-    description,
-    content,
-    tags: tags || "",
-    imageUrl,
-    category,
-    brand,
+  try {
+    await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
 
-    // Converts types safely
-    price: Number(price ?? 0),
-    stock: Number(stock ?? 0),
-    rating: Number(rating ?? 0), 
+    return NextResponse.json({
+      message: "Product deleted successfully",
+    });
+  } catch (error: any) {
+    console.error(error);
 
-    featured: Boolean(featured),
-    active: Boolean(active),
-  };
+    if (error.code === "P2025") {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
 
-  return NextResponse.json(products[index]);
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
+  }
 }

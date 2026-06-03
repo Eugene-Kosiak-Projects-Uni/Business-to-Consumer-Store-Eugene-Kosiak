@@ -4,18 +4,34 @@ import jwt from "jsonwebtoken";
 const SECRET = process.env.JWT_SECRET || "user-secret-key";
 
 export async function GET() {
-  // Get cookie from request, ? for undefined
   const token = (await cookies()).get("user_auth_token")?.value;
 
   if (!token) {
-    return Response.json({ loggedIn: false });
+    return Response.json({
+      loggedIn: false,
+    });
   }
 
-  // Verify token is not expired, and signed in with the correct secret
   try {
-    jwt.verify(token, SECRET);
-    return Response.json({ loggedIn: true });
+    const decoded = jwt.verify(token, SECRET) as {
+      id: number;
+      name: string;
+      email: string;
+      role: string;
+    };
+
+    return Response.json({
+      loggedIn: true,
+      user: {
+        id: decoded.id,
+        name: decoded.name,
+        email: decoded.email,
+        role: decoded.role,
+      },
+    });
   } catch {
-    return Response.json({ loggedIn: false });
+    return Response.json({
+      loggedIn: false,
+    });
   }
 }

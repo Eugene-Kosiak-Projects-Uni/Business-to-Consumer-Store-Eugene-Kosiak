@@ -7,25 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id          Int      @id @default(autoincrement())
-  urlId       String   @unique
-  title       String
-  category    String
-  description String
-  content     String
-  tags        String
-  imageUrl    String
-  active      Boolean  @default(true)
-  date        DateTime @default(now())
-  views       Int      @default(0)
-  likes       Like[]
+enum Role {
+  CUSTOMER
+  ADMIN
 }
 
-model Like {
-  postId Int
-  userIP String
-  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
 
-  @@id([postId, userIP])
+  createdAt DateTime @default(now())
+
+  purchases Purchase[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  urlId       String   @unique
+
+  title       String
+  description String
+  content     String
+
+  imageUrl    String
+  category    String
+  brand       String
+  tags        String
+
+  price       Float
+  stock       Int
+  rating      Float
+
+  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
+
+  date        DateTime @default(now())
+
+  purchaseItems PurchaseItem[]
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date      DateTime @default(now())
+  total     Float
+
+  items     PurchaseItem[]
+}
+
+model PurchaseItem {
+  id         Int      @id @default(autoincrement())
+
+  purchaseId Int
+  productId  Int
+
+  title      String
+  price      Float
+  quantity   Int
+
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

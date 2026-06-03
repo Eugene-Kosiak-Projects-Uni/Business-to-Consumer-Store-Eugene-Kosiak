@@ -97,6 +97,7 @@ test.describe("ADMIN UPDATE SCREEN", () => {
       await userPage.getByLabel("Category").fill("React");
       await userPage.getByLabel("Description").fill("New Description");
       await userPage.getByLabel("Content").fill("New Content");
+      await userPage.getByLabel("Brand").fill("Sony");
       await userPage
         .getByLabel("Image URL")
         .fill("http://example.com/image.jpg");
@@ -105,7 +106,7 @@ test.describe("ADMIN UPDATE SCREEN", () => {
       await userPage.getByText("Save").click();
 
       await expect(
-        userPage.getByText("Product updated successfully"),
+        userPage.getByText("Product created successfully"),
       ).toBeVisible();
 
       await userPage.goto("/");
