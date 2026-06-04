@@ -17,11 +17,13 @@ export default async function Page({
         {
           title: {
             contains: query,
+            mode: "insensitive",
           },
         },
         {
           description: {
             contains: query,
+            mode: "insensitive",
           },
         },
       ],

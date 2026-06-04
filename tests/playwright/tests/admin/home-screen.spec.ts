@@ -135,7 +135,7 @@ test.describe("ADMIN HOME SCREEN", () => {
         .locator('a:has-text("View Purchases")')
         .click();
 
-      await expect(userPage).toHaveURL("/purchases");
+      await userPage.waitForURL("**/purchases");
 
       await expect(
         userPage.getByText("Purchase Records", {
