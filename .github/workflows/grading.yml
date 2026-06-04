@@ -13,7 +13,7 @@ jobs:
       # in GitHub repo → Settings → Secrets → Actions
       E2E: true
       CI: true
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       COURSE_ID: full-stack-development-comp3036-2026
       PASSWORD: 123
