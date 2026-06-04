@@ -78,10 +78,10 @@ export default async function RootLayout({
                 <Link href="/" className="block mb-6">
                   <div className="flex items-center gap-2">
                     <Image
-                      src="/wsuLogo.png"
+                      src="/B2CLogo.png"
                       alt="Logo"
-                      width={40}
-                      height={40}
+                      width={64}
+                      height={64}
                     />
                     <h1 className="text-xl font-bold">B2C Store</h1>
                   </div>

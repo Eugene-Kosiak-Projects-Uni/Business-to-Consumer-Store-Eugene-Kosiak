@@ -22,7 +22,7 @@ const wirelessHeadphonesContent = `
 Experience premium sound quality with active noise cancellation,
 Bluetooth 5.3 connectivity, and up to 40 hours of battery life.
 
-## Features
+## Features:
 
 - Active Noise Cancellation
 - Wireless Bluetooth Connection
@@ -39,7 +39,7 @@ const gamingKeyboardContent = `
 Mechanical gaming keyboard with customizable RGB lighting
 and ultra-fast response switches.
 
-## Features
+## Features:
 
 - Mechanical Switches
 - RGB Backlighting
@@ -55,7 +55,7 @@ const smartWatchContent = `
 
 Track your health, fitness, and notifications in one sleek device.
 
-## Features
+## Features:
 
 - Heart Rate Monitor
 - Sleep Tracking
@@ -69,7 +69,7 @@ const runningShoesContent = `
 
 Lightweight running shoes designed for comfort and performance.
 
-## Features
+## Features:
 
 - Breathable Fabric
 - Cushioned Sole

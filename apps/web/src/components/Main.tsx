@@ -44,6 +44,13 @@ export function Main({
                     {product.category}
                   </p>
 
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="flex items-center gap-1">
+                      <span className="text-yellow-500">⭐</span>
+                      <span>{product.rating}/5</span>
+                    </div>
+                  </div>
+
                   <p
                     className="text-secondary mb-3"
                     data-test-id={`product-description-${product.urlId}`}

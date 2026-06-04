@@ -69,37 +69,77 @@ export default function ProductClient({
           className="w-full h-[500px] object-cover rounded-2xl"
         />
 
-        <div className="space-y-5 relative">
+        <div className="space-y-6 relative">
+          {/* Popup */}
           {popupMessage && (
-            <div className="absolute top-0 right-0 bg-green-600 text-white px-4 py-2 rounded-lg">
+            <div className="absolute top-0 right-0 bg-green-600 text-white px-4 py-2 rounded-lg shadow-md z-10">
               {popupMessage}
             </div>
           )}
 
-          <h1 className="text-4xl font-bold">
+          {/* Title */}
+          <h1 className="text-4xl font-bold leading-tight">
             {product.title}
           </h1>
 
-          <p className="text-gray-600">
+          {/* Rating + Stock row */}
+          <div className="flex items-center gap-4 text-base">
+            <div className="flex items-center gap-1 text-lg">
+              <span className="text-yellow-500 text-xl">⭐</span>
+
+              <span className="font-bold text-lg">
+                {product.rating}
+              </span>
+
+              <span className="font-bold text-lg">
+                / 5
+              </span>
+            </div>
+
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold
+                ${
+                  product.stock > 10
+                    ? "bg-green-100 text-green-700"
+                    : product.stock > 0
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+            >
+              {product.stock > 10
+                ? "In Stock"
+                : product.stock > 0
+                ? `Low Stock (${product.stock})`
+                : "Out of Stock"}
+            </span>
+          </div>
+
+          {/* Description */}
+          <p className="text-gray-600 leading-relaxed">
             {product.description}
           </p>
 
+          {/* Price */}
           <div className="text-4xl font-bold text-blue-600">
             ${product.price} AUD
           </div>
 
+          {/* CTA */}
           <button
             onClick={handleAddToCart}
+            disabled={product.stock === 0}
             className="w-full py-3 rounded-xl font-semibold transition-colors
-            bg-black text-white
-            dark:bg-white dark:text-black
-            hover:opacity-90"
+              bg-black text-white
+              dark:bg-white dark:text-black
+              hover:opacity-90
+              disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Add To Cart
+            {product.stock === 0 ? "Out of Stock" : "Add To Cart"}
           </button>
         </div>
       </div>
 
+      {/* Product Details */}
       <div className="mt-14 border-t pt-10">
         <h2 className="text-2xl font-bold mb-6">
           Product Details
