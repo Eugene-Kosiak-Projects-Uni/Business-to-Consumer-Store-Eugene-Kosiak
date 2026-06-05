@@ -136,20 +136,22 @@ export default function ProductForm({
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page reload on form submit
 
     if (!validate()) {
       setSuccess("");
       return;
     }
-
+    // makes request for creating/updating product with form data, converts types as needed
     const res = await fetch(action, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-      ...form,
+      ...form, // copies form feilds into the request body (title price etc.)
+
+      // Converts to numbers, if field is empty it defaults to 0
       price: Number(form.price || 0),
       stock: Number(form.stock || 0),
       rating: Number(form.rating || 0),

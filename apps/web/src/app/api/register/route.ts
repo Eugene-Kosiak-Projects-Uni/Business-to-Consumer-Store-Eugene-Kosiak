@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@repo/db/prisma";
 
 export async function POST(req: Request) {
-  const formData = await req.formData();
+  const formData = await req.formData(); // read login form data
 
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;

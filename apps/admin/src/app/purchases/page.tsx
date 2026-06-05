@@ -7,7 +7,7 @@ import PurchaseList from "../components/PurchaseList";
 
 export default async function PurchasesPage() {
   const token = (await cookies()).get("auth_token")?.value;
-
+  // If no token, redirect to home page
   if (!token) {
     redirect("/");
   }
@@ -17,14 +17,14 @@ export default async function PurchasesPage() {
   } catch {
     redirect("/");
   }
-
+  // Fetch all purchases with related user and product details, ordered by date (newest first)
   const purchases = await prisma.purchase.findMany({
     include: {
-      user: true,
+      user: true, // Include user details for each purchase
 
       items: {
         include: {
-          product: true,
+          product: true, // Include product details for each purchase item
         },
       },
     },

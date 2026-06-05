@@ -9,10 +9,12 @@ import {
 
 import Link from "next/link";
 
+// Define types for purchase items with associated product information
 type PurchaseItemWithProduct = PurchaseItem & {
   product: Product;
 };
 
+// Define type for purchase with associated user and purchase items
 type PurchaseWithRelations = Purchase & {
   user: User;
   items: PurchaseItemWithProduct[];

@@ -99,10 +99,12 @@ export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  // Get product ID from URL params
   const { id } = await context.params;
-
+  // Convert ID to number
   const productId = Number(id);
 
+  // Delete product by ID
   try {
     await prisma.product.delete({
       where: {
@@ -116,6 +118,7 @@ export async function DELETE(
   } catch (error: any) {
     console.error(error);
 
+    // Prisma error code P2025 means "Record to delete does not exist"
     if (error.code === "P2025") {
       return NextResponse.json(
         { error: "Product not found" },

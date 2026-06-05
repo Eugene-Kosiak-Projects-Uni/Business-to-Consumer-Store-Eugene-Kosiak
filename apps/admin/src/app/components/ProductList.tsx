@@ -23,9 +23,9 @@ export default function ProductList({ products }: { products: Product[] }) {
   const [productState, setProductState] = useState(products);
   // Store status message
   const [statusMessage, setStatusMessage] = useState("");
-
+  // State for delete confirmation
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  // Store ID of product to delete
   const [selectedProductId, setSelectedProductId] =
     useState<number | null>(null);
 
@@ -144,9 +144,7 @@ export default function ProductList({ products }: { products: Product[] }) {
 
     if (!response.ok) {
       setStatusMessage("Failed to delete product");
-
       setTimeout(() => setStatusMessage(""), 6000);
-
       return;
     }
 

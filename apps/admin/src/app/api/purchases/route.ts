@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
 
 export async function GET() {
+  // Read JWT token from cookies
   const token = (await cookies()).get("auth_token")?.value;
 
   if (!token) {
@@ -22,14 +23,14 @@ export async function GET() {
       { status: 401 }
     );
   }
-
+  // Fetch all purchases with related user and product details, ordered by date (newest first)
   const purchases = await prisma.purchase.findMany({
     include: {
-      user: true,
+      user: true, // Include user details for each purchase
 
       items: {
         include: {
-          product: true,
+          product: true, // Include product details for each purchase item
         },
       },
     },
