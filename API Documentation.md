@@ -708,14 +708,10 @@ Fields:
 # .env files
 
 packages/db/.env:
-DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
+![alt text](image-1.png)
 
 apps/web/.env:
-DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
-JWT_SECRET=secret
-STRIPE_SECRET_KEY="sk_test_51TdnJvA0moIFd3LAAqYKgZ13se45dQhfF5wgXSUaNCRloGU3ZiYwcFlHGJmCfZc0I5RySL713VuSxYxFTlaTaRAK00JOzBvmL6"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_51TdnJvA0moIFd3LAho0qDIhRNKf6PkzN1DUBehinmYgQsqaibvpS1G63auDo17AlRZUxTYMAW5Xdoxjbj0EqU461006DusRJn8"
+![alt text](image-3.png)
 
 apps/admin/.env:
-PASSWORD=admin123
-JWT_SECRET=super-secret-password
+![alt text](image-2.png)
