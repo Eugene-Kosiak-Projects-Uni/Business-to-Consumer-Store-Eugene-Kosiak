@@ -52,6 +52,7 @@ model PurchaseItem {
   title      String
   price      Float
   quantity   Int
+  imageUrl   String
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
 }

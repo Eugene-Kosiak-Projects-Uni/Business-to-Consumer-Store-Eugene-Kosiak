@@ -9,6 +9,7 @@ type PurchaseItem = {
   title: string;
   quantity: number;
   price: number;
+  imageUrl: string;
 };
 
 // Purchase structure
@@ -16,6 +17,7 @@ type Purchase = {
   id: number;
   date: string;
   total: number;
+  imageUrl: string;
   items: PurchaseItem[];
 };
 
@@ -32,34 +34,43 @@ export default function PurchasesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadPurchases() {
-      try {
-        const res = await fetch("/api/purchase");
+   async function loadPurchases() {
+    try {
+      const res = await fetch("/api/purchase");
 
-        // Redirect user if not logged in
-        if (res.status === 401) {
-          router.push("/login");
-          return;
-        }
-
-        // convert response to JSON
-        const data = await res.json();
-
-        // store its state ONLY if response is an array
-        if (Array.isArray(data)) {
-          setPurchases(data);
-        } else {
-          setPurchases([]);
-        }
-      } catch (error) {
-        console.error(error);
-
-        // fallback to empty array if request fails
-        setPurchases([]);
-      } finally {
-        setLoading(false);
+      // Redirect user if not logged in
+      if (res.status === 401) {
+        router.push("/login");
+        return;
       }
+
+      // convert response to JSON
+      const text = await res.text();
+
+      // Prevent JSON parse crash on empty response
+      if (!text) {
+        setPurchases([]);
+        return;
+      }
+      
+      // convert response to JSON
+      const data = JSON.parse(text);
+
+      // store its state ONLY if response is an array
+      if (Array.isArray(data)) {
+        setPurchases(data);
+      } else {
+        setPurchases([]);
+      }
+    } catch (error) {
+      console.error(error);
+
+      // fallback to empty array if request fails
+      setPurchases([]);
+    } finally {
+      setLoading(false);
     }
+  }
 
     loadPurchases();
   }, [router]); // dependency array - runs once during page loading
@@ -125,13 +136,36 @@ export default function PurchasesPage() {
               Remove
             </button>
 
-            <ul className="ml-4 list-disc mt-2">
+            <div className="mt-4 space-y-3">
               {p.items.map((item, index) => (
-                <li key={`${item.productId}-${index}`}>
-                  {item.title} × {item.quantity} (${item.price})
-                </li>
+                <div
+                  key={`${item.productId}-${index}`}
+                  className="flex items-center gap-4 border rounded p-3"
+                >
+                  {/* Product Image */}
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-20 h-20 object-cover rounded"
+                  />
+
+                  {/* Product Details */}
+                  <div>
+                    <p className="font-semibold">
+                      {item.title}
+                    </p>
+
+                    <p className="text-sm text-gray-600">
+                      Quantity: {item.quantity}
+                    </p>
+
+                    <p className="text-sm font-medium">
+                      ${item.price}
+                    </p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
 
             <p className="mt-2 font-bold">
               Total: ${p.total}

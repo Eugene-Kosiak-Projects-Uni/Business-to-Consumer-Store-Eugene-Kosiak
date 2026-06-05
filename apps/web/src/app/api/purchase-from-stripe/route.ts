@@ -46,7 +46,10 @@ export async function POST(req: Request) {
       await stripe.checkout.sessions.retrieve(
         sessionId,
         {
-          expand: ["line_items"], // include purchased products
+          expand: [
+            "line_items",
+            "line_items.data.price.product",
+          ], // include purchased products
         }
       );
 
@@ -61,20 +64,22 @@ export async function POST(req: Request) {
         total: (session.amount_total || 0) / 100, // stripe stores money in cents
 
         items: {
-          create: lineItems.map(
-            (
-              item: {
-                description: string | null;
-                amount_total: number | null;
-                quantity: number | null;
-              }
-            ) => ({
-              productId: 1,
-              title: item.description || "Unknown Product",
-              price: (item.amount_total || 0) / 100,
-              quantity: item.quantity || 1,
-            })
-          ),
+          create: lineItems.map((item: any) => ({
+            productId: Number(
+              (item.price?.product as Stripe.Product)
+                ?.metadata?.productId ?? 1
+            ),
+
+            imageUrl:
+              (item.price?.product as Stripe.Product)
+                ?.metadata?.imageUrl || "",
+
+            title: item.description || "Unknown Product",
+
+            price: (item.price?.unit_amount || 0) / 100,
+
+            quantity: item.quantity || 1,
+          })),
         },
       },
     });

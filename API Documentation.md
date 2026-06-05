@@ -41,13 +41,13 @@ http://localhost:3002
 Customer Application
 
 ```
-https://business-to-consumer-store-eugene-k.vercel.app
+https://business-to-consumer-store-eugene-k.vercel.app/
 ```
 
 Admin Application
 
 ```
-https://business-to-consumer-store-git-94f1cf-eugene-kosiak-s-projects.vercel.app
+https://business-to-consumer-store-eugene-k-seven.vercel.app
 ```
 
 

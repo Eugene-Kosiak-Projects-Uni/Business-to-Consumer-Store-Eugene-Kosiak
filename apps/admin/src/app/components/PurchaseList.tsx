@@ -91,7 +91,7 @@ export default function PurchaseList({
                   >
                     <div className="flex items-center gap-4">
                       <img
-                        src={item.product.imageUrl}
+                        src={item.imageUrl || "/placeholder.png"}
                         alt={item.title}
                         className="w-20 h-20 object-cover rounded-lg border"
                       />

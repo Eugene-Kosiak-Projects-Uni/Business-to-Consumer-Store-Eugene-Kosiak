@@ -30,6 +30,7 @@ export async function POST(req: Request) {
       line_items: products.map(
         (
           product: {
+            id: number;
             title: string;
             imageUrl: string;
             price: number;
@@ -38,10 +39,13 @@ export async function POST(req: Request) {
         ) => ({ // => take one product and return an object in the format Stripe expects
           price_data: {
             currency: "aud",
-
             product_data: {
               name: product.title,
               images: [product.imageUrl],
+              metadata: {
+                productId: product.id.toString(),
+                imageUrl: product.imageUrl,
+              },
             },
 
             unit_amount: Math.round(product.price * 100),

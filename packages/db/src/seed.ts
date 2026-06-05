@@ -76,12 +76,14 @@ export async function seed() {
               productId: 1,
               title: "Wireless Headphones",
               price: 199,
+              imageUrl: "https://example.com/headphones.jpg",
               quantity: 1,
             },
             {
               productId: 2,
               title: "RGB Gaming Keyboard",
               price: 149,
+              imageUrl: "https://example.com/keyboard.jpg",
               quantity: 1,
             },
           ],
@@ -89,6 +91,21 @@ export async function seed() {
       },
     });
   }
+
+  // Reset auto-increment sequences
+  await client.$executeRawUnsafe(`
+    SELECT setval(
+      pg_get_serial_sequence('"Product"', 'id'),
+      (SELECT MAX(id) FROM "Product")
+    );
+  `);
+
+  await client.$executeRawUnsafe(`
+    SELECT setval(
+      pg_get_serial_sequence('"User"', 'id'),
+      (SELECT MAX(id) FROM "User")
+    );
+  `);
 
   console.log("✅ Seeding complete");
 }
