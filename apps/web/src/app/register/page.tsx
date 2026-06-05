@@ -9,9 +9,11 @@ export default async function RegisterPage({
 }: {
   searchParams: Promise<{ success?: string; error?: string }>;
 }) {
+  // Read URL parameters for success/error messages
   const params = await searchParams;
-
+  // Check for success or error messages in URL parameters
   const success = params.success === "true";
+  // Store error message if error parameter exists
   const error = params.error;
 
   // Check login token
@@ -35,7 +37,7 @@ export default async function RegisterPage({
     loggedIn = false;
   }
 
-  // USER ALREADY LOGGED IN
+  // User already logged in
   if (loggedIn) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-100">

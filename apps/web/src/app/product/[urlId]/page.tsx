@@ -13,9 +13,9 @@ export default function Page({
   params: Promise<{ urlId: string }>;
 }) {
   const router = useRouter();
-
+  // Get urlId from URL parameters
   const { urlId } = use(params);
-
+  // Store product data
   const [product, setProduct] =
     useState<Product | null>(null);
 
@@ -25,13 +25,14 @@ export default function Page({
   // Store state of the pop up message
   const [popupMessage, setPopupMessage] =
     useState("");
-
+  // Store cart data and actions
   const { addToCart, cart } = useCart();
 
   const currentQuantity =
     cart.find((item) => item.id === product?.id)
       ?.quantity || 0;
 
+  // Load product data when URL changes
   useEffect(() => {
     async function loadProduct() {
       try {
@@ -53,6 +54,7 @@ export default function Page({
     loadProduct();
   }, [urlId]);
 
+  // Handle add to cart button click
   async function handleAddToCart() {
     const res = await fetch("/api/auth/me");
 

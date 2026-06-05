@@ -7,14 +7,16 @@ export default async function Page({
 }: {
   params: Promise<{ tag: string }>;
 }) {
+  // Get tag from URL parameters
   const { tag } = await params;
-
+  // Find active products in the database
   const products = await prisma.product.findMany({
     where: {
       active: true,
     },
   });
-
+  
+  // Filter products to only include those that have the tag in their tags field
   const filteredProducts = products.filter(
     (p) =>
       p.tags

@@ -3,8 +3,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { Product } from "@prisma/client";
 
+// Defines the shape of a cart item (product + quantity)
 type CartItem = Product & { quantity: number };
 
+// Defines the shape of the cart context
 type CartContextType = {
   cart: CartItem[];
   addToCart: (product: Product) => void;
@@ -12,7 +14,7 @@ type CartContextType = {
   clearCart: () => void;
   updateQuantity: (id: number, quantity: number) => boolean;
 };
-
+// Create the cart context with default undefined value
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -29,14 +31,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
 
         if (data.loggedIn) {
-          setUserId(data.user.id);
+          setUserId(data.user.id); // set user ID if logged in
         } else {
           setUserId(null);
           setCart([]); // reset cart if not logged in
         }
       } catch {
         setUserId(null);
-        setCart([]);
+        setCart([]); // reset cart on error
       }
     }
 
@@ -53,7 +55,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } else {
       setCart([]); // new user = empty cart
     }
-  }, [userId]);
+  }, [userId]); // runs when user changes
 
   // Saves updated cart (per user)
   useEffect(() => {
@@ -62,6 +64,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(`cart_${userId}`, JSON.stringify(cart));
   }, [cart, userId]); // runs when cart changes
 
+  // Sync cart across tabs for the same user
   useEffect(() => {
     function syncCart() {
       if (userId === null) return;
@@ -115,8 +118,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       prev.map((p) => {
         if (p.id !== id) return p;
         /*
-          If too high → cap at max
-          Else → allow value
+          If too high -> cap at max
+          Else -> allow value
           Never go below 1
         */
         return {

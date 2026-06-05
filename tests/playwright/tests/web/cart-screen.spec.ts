@@ -123,7 +123,7 @@ test.describe("CART SCREEN", () => {
 
       await page.getByRole("button", { name: /checkout/i }).click();
 
-      // ✅ FORCE success page instead of waiting for Stripe
+      // FORCE success page instead of waiting for Stripe
       await page.goto("/success?session_id=cs_test_mock");
 
       await expect(

@@ -5,13 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { useCart } from "@/components/Cart/CartContext";
 
 export default function SuccessPage() {
+  // Get session_id from URL parameters
   const params = useSearchParams();
-
+  // Store cart data and actions
   const { clearCart } = useCart();
-
   // Prevent duplicate purchase saves
   const hasSavedPurchase = useRef(false);
 
+  // Save purchase to database on page load
   useEffect(() => {
     const sessionId = params.get("session_id");
 
@@ -50,7 +51,7 @@ export default function SuccessPage() {
     }
 
     savePurchase();
-  }, [params, clearCart]);
+  }, [params, clearCart]); // only run on page load
 
   return (
     <div className="p-10 text-center">

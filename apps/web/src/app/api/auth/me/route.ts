@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 const SECRET = process.env.JWT_SECRET || "user-secret-key";
 
+// Read current user's authentication status from JWT cookie
 export async function GET() {
   const token = (await cookies()).get("user_auth_token")?.value;
 
@@ -13,6 +14,7 @@ export async function GET() {
   }
 
   try {
+    // Decode token and return user details
     const decoded = jwt.verify(token, SECRET) as {
       id: number;
       name: string;
@@ -29,7 +31,7 @@ export async function GET() {
         role: decoded.role,
       },
     });
-  } catch {
+  } catch { // Invalid/expired token, treat as not logged in
     return Response.json({
       loggedIn: false,
     });

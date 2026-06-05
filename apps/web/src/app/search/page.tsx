@@ -6,10 +6,11 @@ export default async function Page({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  // Get search query from URL parameters
   const params = await searchParams;
-
+  // Convert query to lowercase for case-insensitive search
   const query = (params.q || "").toLowerCase();
-
+  // Find active products in the database where title or description contains the query (case-insensitive)
   const filteredProducts = await prisma.product.findMany({
     where: {
       active: true,

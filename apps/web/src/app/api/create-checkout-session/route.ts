@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+// Create Stripe checkout session for cart items
 export async function POST(req: Request) {
   try {
-    // Create Stripe INSIDE function
+    // Create Stripe object function
     const stripe = new Stripe(
       process.env.STRIPE_SECRET_KEY || "",
       {
@@ -11,19 +12,21 @@ export async function POST(req: Request) {
       }
     );
 
-    // Extra safety check
+    // Check if stripe key is missing
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
         { error: "Stripe key missing" },
         { status: 500 }
       );
     }
-
+    // Reads JSON sent from the cart page.
     const { products } = await req.json();
-
+    
+    // Create Stripe checkout session with cart items
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
 
+      // Converts cart items into Stripe's expected format
       line_items: products.map(
         (
           product: {
@@ -32,7 +35,7 @@ export async function POST(req: Request) {
             price: number;
             quantity: number;
           }
-        ) => ({
+        ) => ({ // => take one product and return an object in the format Stripe expects
           price_data: {
             currency: "aud",
 
@@ -50,6 +53,7 @@ export async function POST(req: Request) {
 
       mode: "payment",
 
+      // Where Stripe sends the customer after successful payment.
       success_url: `${req.headers.get(
         "origin"
       )}/success?session_id={CHECKOUT_SESSION_ID}`,

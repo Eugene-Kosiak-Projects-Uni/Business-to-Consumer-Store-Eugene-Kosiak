@@ -23,6 +23,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Reads JWT token from browser
     const token = (await cookies()).get(
       "user_auth_token"
     )?.value;
@@ -33,28 +34,31 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
-
+    // Verify JWT token
     const decoded = jwt.verify(token, SECRET) as {
       id: number;
     };
 
     const { sessionId } = await req.json();
 
+    // Retrieve session from Stripe to get line items
     const session =
       await stripe.checkout.sessions.retrieve(
         sessionId,
         {
-          expand: ["line_items"],
+          expand: ["line_items"], // include purchased products
         }
       );
 
+    // Get all purchased products, return nothing if no products purchased
     const lineItems = session.line_items?.data || [];
 
+    // Create purchase row in purchase database with user ID, total price, and associated items
     const purchase = await prisma.purchase.create({
       data: {
-        userId: decoded.id,
+        userId: decoded.id, // specific user
 
-        total: (session.amount_total || 0) / 100,
+        total: (session.amount_total || 0) / 100, // stripe stores money in cents
 
         items: {
           create: lineItems.map(

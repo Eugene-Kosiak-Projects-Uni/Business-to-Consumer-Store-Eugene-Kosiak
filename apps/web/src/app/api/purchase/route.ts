@@ -71,9 +71,10 @@ export async function POST(req: Request) {
       email: string;
       role: string;
     };
-
+    // Read cart items from request body
     const body = await req.json();
 
+    // Validate cart items
     const cart = body.cart || [];
 
     if (!cart.length) {
@@ -83,12 +84,14 @@ export async function POST(req: Request) {
       );
     }
 
+    // Calculate total price from cart items
     const total = cart.reduce(
       (sum: number, item: any) =>
         sum + item.price * item.quantity,
       0
     );
 
+    // Create purchase record in purchase database with associated items
     const purchase = await prisma.purchase.create({
       data: {
         userId: decoded.id,
@@ -126,6 +129,7 @@ export async function POST(req: Request) {
 // --------------------
 export async function DELETE(req: Request) {
   try {
+    // Read JWT Cookie and check login
     const token = (await cookies()).get("user_auth_token")?.value;
 
     if (!token) {
@@ -135,14 +139,17 @@ export async function DELETE(req: Request) {
       );
     }
 
+    // Decode JWT to check if the token is valid
     const decoded = jwt.verify(token, SECRET) as {
       id: number;
     };
 
+    // Get purchase ID from query parameters
     const { searchParams } = new URL(req.url);
 
     // Reset route for tests
     if (searchParams.get("reset")) {
+      // Deletes all purchases for this user (and associated items)
       await prisma.purchaseItem.deleteMany({
         where: {
           purchase: {
@@ -162,10 +169,11 @@ export async function DELETE(req: Request) {
 
     const id = Number(searchParams.get("id"));
 
+    // Find purchase with this ID AND owned by this customer
     const purchase = await prisma.purchase.findFirst({
       where: {
         id,
-        userId: decoded.id,
+        userId: decoded.id, // only delete if this purchase belongs to the logged in user
       },
     });
 
