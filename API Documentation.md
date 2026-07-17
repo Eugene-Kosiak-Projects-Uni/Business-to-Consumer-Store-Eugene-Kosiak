@@ -708,10 +708,13 @@ Fields:
 # .env files
 
 packages/db/.env:
+
 ![alt text](image-1.png)
 
 apps/web/.env:
+
 ![alt text](image-3.png)
 
 apps/admin/.env:
+
 ![alt text](image-2.png)

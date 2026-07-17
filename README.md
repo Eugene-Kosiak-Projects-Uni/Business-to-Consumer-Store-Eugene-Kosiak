@@ -282,6 +282,11 @@ pnpm --filter @repo/db studio
 
 ## Running tests
 
+### Unit Tests:
+To run the tests please run the following in the root folder, this will open Vitest Interface which shows 16 tests passing:
+- turbo dev:test 
+
+### E2E Tests:
 To run the tests please run the following in the tests/playwright folder:
 - pnpm playwright test --grep @a1
 - pnpm playwright test --grep @a2
