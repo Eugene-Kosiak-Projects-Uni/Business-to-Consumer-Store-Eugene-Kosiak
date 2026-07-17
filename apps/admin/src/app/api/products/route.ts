@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@repo/db/prisma";
+import { isLoggedIn } from "../../../utils/auth";
 
 // slug function - to type title of product in URL link rather than by number
 function generateUrlId(title: string) {
@@ -11,6 +12,26 @@ function generateUrlId(title: string) {
 }
 
 export async function POST(req: Request) {
+  /*
+  Check if the user is logged in and return 401 if the JWT is missing, invalid, or expired
+  To prevent unauthorised creation of new products.
+  */
+  try {
+    const loggedIn = await isLoggedIn();
+
+    if (!loggedIn) {
+      return NextResponse.json(
+        { error: "Session expired" },
+        { status: 401 }
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Session expired" },
+      { status: 401 }
+    );
+  }
+
   // Extract form data from request body (JSON data sent from frontend to backend)
   const body = await req.json();
 

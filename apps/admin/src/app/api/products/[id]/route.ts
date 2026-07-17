@@ -1,10 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@repo/db/prisma";
+import { isLoggedIn } from "../../../../utils/auth";
 
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  /*
+  Check if the user is logged in and return 401 if the JWT is missing, invalid, or expired
+  To prevent unauthorised update of products.
+  */
+  try {
+    const loggedIn = await isLoggedIn();
+
+    if (!loggedIn) {
+      return NextResponse.json(
+        { error: "Session expired" },
+        { status: 401 }
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Session expired" },
+      { status: 401 }
+    );
+  }
+
   const { id } = await context.params;
 
   const productId = Number(id);
@@ -99,6 +120,26 @@ export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  /*
+  Check if the user is logged in and return 401 if the JWT is missing, invalid, or expired
+  To prevent unauthorised deletion of products.
+  */
+  try {
+    const loggedIn = await isLoggedIn();
+
+    if (!loggedIn) {
+      return NextResponse.json(
+        { error: "Session expired" },
+        { status: 401 }
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Session expired" },
+      { status: 401 }
+    );
+  }
+
   // Get product ID from URL params
   const { id } = await context.params;
   // Convert ID to number

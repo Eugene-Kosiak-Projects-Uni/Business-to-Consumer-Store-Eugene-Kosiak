@@ -2,6 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 
@@ -51,6 +52,8 @@ export default function ProductForm({
   const [preview, setPreview] = useState(false);
   // Shows success message
   const [success, setSuccess] = useState("");
+  // Used to navigate to different pages after form submission
+  const router = useRouter();
 
   // Used when editing post, pre-fills form with existing data
   // Runs when initialData changes (e.g. when loading post to edit)
@@ -160,6 +163,12 @@ export default function ProductForm({
       active: form.active ?? true,
       }),
     });
+
+    // If JWT has expired, redirect user to login page
+    if (res.status === 401) {
+      window.location.replace("/");
+      return;
+    }
 
     if (res.ok) {
       setErrors([]);

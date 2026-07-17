@@ -1,7 +1,28 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@repo/db/prisma";
+import { isLoggedIn } from "../../../../utils/auth";
 
 export async function POST(req: Request) {
+  /*
+  Check if the user is logged in and return 401 if the JWT is missing, invalid, or expired
+  To prevent unauthorised toggling of product active status.
+  */
+  try {
+    const loggedIn = await isLoggedIn();
+
+    if (!loggedIn) {
+      return NextResponse.json(
+        { error: "Session expired" },
+        { status: 401 }
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Session expired" },
+      { status: 401 }
+    );
+  }
+
   // Get id from request body (JSON data sent from frontend to backend)
   const { id } = await req.json();
 

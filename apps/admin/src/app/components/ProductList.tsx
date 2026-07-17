@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Product } from "@prisma/client";
 import Link from "next/link";
 
@@ -28,6 +29,8 @@ export default function ProductList({ products }: { products: Product[] }) {
   // Store ID of product to delete
   const [selectedProductId, setSelectedProductId] =
     useState<number | null>(null);
+  // Used to navigate to different pages after form submission
+  const router = useRouter();
 
  let filtered = [...productState].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -94,12 +97,19 @@ export default function ProductList({ products }: { products: Product[] }) {
 
   // Function to toggle active status of a product, takes the product ID as a parameter
   async function toggleActive(id: number) {
+    
     // Update database with the status change, geting the products ID
-    await fetch("/api/products/toggle", {
+   const response = await fetch("/api/products/toggle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
+
+    // If JWT has expired, redirect user to login page
+    if (response.status === 401) {
+      window.location.replace("/");
+      return;
+    }
 
     // Update UI instantly 
     setProductState((prev) =>
@@ -141,6 +151,12 @@ export default function ProductList({ products }: { products: Product[] }) {
         method: "DELETE",
       }
     );
+
+    // If JWT has expired, redirect user to login page
+    if (response.status === 401) {
+      window.location.replace("/");
+      return;
+    }
 
     if (!response.ok) {
       setStatusMessage("Failed to delete product");
