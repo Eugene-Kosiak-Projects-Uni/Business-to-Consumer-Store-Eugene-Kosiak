@@ -26,3 +26,17 @@ test("returns categories with count", async () => {
     { name: "D", count: 2 },
   ]);
 });
+
+test("ignores inactive categories", async()=>{
+
+ expect(
+  categories([
+    {
+      category:"Gaming",
+      active:false
+    }
+  ])
+ )
+ .toEqual([]);
+
+});

@@ -22,3 +22,14 @@ test("returns tags with count", async () => {
     { name: "C", count: 2 },
   ]);
 });
+
+test("ignores empty tags", async()=>{
+ expect(
+  tags([
+    {
+      tags:"",
+      active:true
+    }
+  ])
+ ).toEqual([]);
+});
