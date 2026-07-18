@@ -301,6 +301,7 @@ For Playwright interface run:
 
 This project is a monorepo containing two Next.js applications (`admin` and `web`), shared packages, Vitest Unit Testing, and  Playwright end-to-end tests.
 
+```
 Business-to-Consumer-Store-Eugene-Kosiak/
 ├── .github/
 │   └── workflows/
@@ -537,7 +538,7 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 ├── turbo.json
 ├── .gitignore
 └── .prettierrc
-
+```
 ### Applications
 
 - apps/web → Customer-facing B2C store  
