@@ -1,8 +1,40 @@
 # Assignment 2 - B2C Store Application
 
+[![Tests](https://img.shields.io/badge/Tests-passing-brightgreen?logo=github)](#)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql)](https://neon.tech/)
+[![Stripe](https://img.shields.io/badge/Stripe-Checkout-635BFF?logo=stripe)](https://stripe.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright)](https://playwright.dev/)
+[![pnpm](https://img.shields.io/badge/pnpm-Monorepo-F69220?logo=pnpm)](https://pnpm.io/)
+
 The goal of this assignment is to design and develop a fully functional **Business-to-Consumer (B2C) Store application** that allows users to browse products, manage a shopping cart, and complete purchases, while administrators manage products and view purchase records.
 
 The application builds on an existing monorepo structure from WSU Blog Post (Assignments 2.1, 2.2, 2.3) and extends it with full e-commerce functionality.
+
+### Local Development
+
+| App | URL | Purpose |
+|---|---|---|
+| `apps/web` | [http://localhost:3001](http://localhost:3001) | Customer Product Store |
+| `apps/admin` | [http://localhost:3002](http://localhost:3002) | Admin dashboard (ADMIN role required) |
+
+### Live Deployment
+
+| App | URL |
+|---|---|
+| Storefront | [https://business-to-consumer-store-eugene-k-ten.vercel.app/](https://business-to-consumer-store-eugene-k-ten.vercel.app/) |
+| Admin | [https://business-to-consumer-store-eugene-k-iota.vercel.app/](https://business-to-consumer-store-eugene-k-iota.vercel.app/) |
+
+
+### Test Credentials
+
+- **Customer:** `user@test.com` / `user123`
+- **Admin:** `admin@test.com` / `admin123`
+- **Stripe test card:** `4242 4242 4242 4242`
+  - **Expiry:** `12/34`
+  - **CVC:** `123`
 
 ## Success Criteria
 
@@ -222,32 +254,24 @@ pnpx playwright install
 Copy bellow in their respective folders:
 
 packages/db/.env: <br>
+```
 DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
-
+```
 apps/web/.env: <br>
+```
 DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
 JWT_SECRET=secret
 STRIPE_SECRET_KEY=sk_test_51TdnJvA0moIFd3LAAqYKgZ13se45dQhfF5wgXSUaNCRloGU3ZiYwcFlHGJmCfZc0I5RySL713VuSxYxFTlaTaRAK00JOzBvmL6
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51TdnJvA0moIFd3LAho0qDIhRNKf6PkzN1DUBehinmYgQsqaibvpS1G63auDo17AlRZUxTYMAW5Xdoxjbj0EqU461006DusRJn8
+```
 
 apps/admin/.env: <br>
+```
 PASSWORD=admin123
 JWT_SECRET=super-secret-password
+```
 
 ---
-# Test credientials:
-
-Customer Credentials:
-
-Username:  user@test.com
-
-Password: user123
-
-Admin Credentials:
-Username: admin@test.com
-
-Password: admin123
-
 
 ## Running the project (setup - local)
 
@@ -261,6 +285,19 @@ This will run:
 
 - Client application at [http://localhost:3001](http://localhost:3001)
 - Admin application at [http://localhost:3002](http://localhost:3002)
+
+## Production
+
+Customer Application
+```
+https://business-to-consumer-store-eugene-k-ten.vercel.app/
+```
+
+Admin Application
+
+```
+https://business-to-consumer-store-eugene-k-iota.vercel.app/
+```
 
 ## Database Setup
 Run these once after setting your DATABASE_URL:
@@ -283,7 +320,7 @@ pnpm --filter @repo/db studio
 ## Running tests
 
 ### Unit Tests:
-To run the tests please run the following in the root folder, this will open Vitest Interface which shows 16 tests passing:
+To run the tests please run the following in the root folder, this will open Vitest Interface which shows 16 unit tests passing:
 - turbo dev:test 
 
 ### E2E Tests:
