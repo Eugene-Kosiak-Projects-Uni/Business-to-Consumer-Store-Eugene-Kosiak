@@ -1118,16 +1118,12 @@ Fields:
 ---
 # .env files
 
-packages/db/.env: <br>
-
-![alt text](image-1.png)
+### packages/db/.env:
 
 ```env
 DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
 ```
-apps/web/.env: <br>
-
-![alt text](image-2.png)
+### apps/web/.env:
 
 ```env
 DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
@@ -1136,9 +1132,7 @@ STRIPE_SECRET_KEY=sk_test_51TdnJvA0moIFd3LAAqYKgZ13se45dQhfF5wgXSUaNCRloGU3ZiYwc
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51TdnJvA0moIFd3LAho0qDIhRNKf6PkzN1DUBehinmYgQsqaibvpS1G63auDo17AlRZUxTYMAW5Xdoxjbj0EqU461006DusRJn8
 ```
 
-apps/admin/.env: <br>
-
-![alt text](image-3.png)
+### apps/admin/.env:
 
 ```env
 PASSWORD=admin123

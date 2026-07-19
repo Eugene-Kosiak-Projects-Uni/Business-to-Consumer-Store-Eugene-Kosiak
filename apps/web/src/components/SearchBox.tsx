@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SearchBox() {
+  // Initialize router and state for the search input
   const router = useRouter();
+  // State to hold the current value of the search input
   const [value, setValue] = useState("");
 
   return (
